@@ -121,3 +121,8 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
 - **L11 (2026-10-22), pause:** the user said "me tengo que ir, es para que sigamos despues!"
   - Next: T7 (shopping mode + realtime, route `/super`), then T8 (close trip UI), then T9 (Netlify + README + Google OAuth setup).
   - Nothing pushed. Local Supabase may still be running in Docker (`pnpm exec supabase stop` to stop it).
+- **L12 (2026-10-22), push:** "guardame todo en engram y pushea todas las ramas. Cuando vuelva seguimos y cuando terminemos hacemos los PR".
+  - All `feat/01`..`feat/05` branches were pushed with upstream.
+  - Remote `main` had a GitHub "Initial commit" (README.md) with unrelated history. It was merged into local `main` with `--allow-unrelated-histories` (85db29c) and pushed. No force push; the feature branches were not rewritten.
+  - The T9 README must build on the existing README.md from main (expect a trivial conflict on PR7).
+  - PRs are opened after T9, at the user's request.
