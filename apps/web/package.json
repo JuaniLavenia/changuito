@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:integration": "vitest run --environment node integration",
     "lint": "eslint .",
     "typecheck": "tsc -b"
   },
