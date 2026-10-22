@@ -45,7 +45,7 @@ Reference: `docs/PROPOSAL.md`.
 | ID | Specs | Route | Status | Commit |
 |---|---|---|---|---|
 | T1 | S1 | inline | done | feat/01-scaffold (see Log L4) |
-| T2 | S6, S8 | inline (test-first, domain) | pending | — |
+| T2 | S6, S8 | inline (test-first, domain) | done | feat/02-domain (see Log L5) |
 | T3 | S3, S4, S5 | inline (migrations, RLS, seed) | pending | — |
 | T4 | S2, S3, S4 | inline (auth + onboarding UI) | pending | — |
 | T5 | S5 | inline (catalog UI) | pending | — |
@@ -74,3 +74,8 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - `build`: ok.
   - `lint`: clean.
   - Domain has no tests yet (T2).
+- **L5, T2 evidence:**
+  - RED: 4 test files failed (modules missing).
+  - GREEN: `pnpm --filter @changuito/domain test` gives 22 passed. `typecheck` clean.
+  - Rules: `suggestQuantity` (S6), `buildSuggestedList` (a missing stock entry counts as 0; skipped items are re-offered and flagged `carriedOver`), `checkItem`/`uncheckItem`/`skipItem` (S7/S8), `closeTrip` (refuses pending items; carryOver = skipped), `sortBySection`.
+  - Assumption: `price` is the unit price.
