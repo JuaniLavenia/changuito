@@ -1,0 +1,145 @@
+[
+  {
+    "name": "Almacén",
+    "products": [
+      { "name": "Arroz", "unit": "kg", "expected": 2 },
+      { "name": "Fideos secos", "unit": "pack", "expected": 4 },
+      { "name": "Harina", "unit": "kg", "expected": 1 },
+      { "name": "Harina leudante", "unit": "kg", "expected": 1 },
+      { "name": "Polenta", "unit": "pack", "expected": 1 },
+      { "name": "Azúcar", "unit": "kg", "expected": 1 },
+      { "name": "Sal fina", "unit": "pack", "expected": 1 },
+      { "name": "Aceite de girasol", "unit": "l", "expected": 1.5 },
+      { "name": "Aceite de oliva", "unit": "l", "expected": 0.5 },
+      { "name": "Vinagre", "unit": "l", "expected": 0.5 },
+      { "name": "Yerba mate", "unit": "kg", "expected": 2 },
+      { "name": "Café", "unit": "pack", "expected": 1 },
+      { "name": "Té", "unit": "pack", "expected": 1 },
+      { "name": "Cacao", "unit": "pack", "expected": 1 },
+      { "name": "Puré de tomate", "unit": "unit", "expected": 4 },
+      { "name": "Tomate en lata", "unit": "unit", "expected": 4 },
+      { "name": "Arvejas en lata", "unit": "unit", "expected": 2 },
+      { "name": "Choclo en lata", "unit": "unit", "expected": 2 },
+      { "name": "Atún en lata", "unit": "unit", "expected": 3 },
+      { "name": "Lentejas", "unit": "pack", "expected": 1 },
+      { "name": "Mayonesa", "unit": "unit", "expected": 1 },
+      { "name": "Ketchup", "unit": "unit", "expected": 1 },
+      { "name": "Mostaza", "unit": "unit", "expected": 1 },
+      { "name": "Caldos en cubo", "unit": "pack", "expected": 1 },
+      { "name": "Pan rallado", "unit": "pack", "expected": 1 },
+      { "name": "Galletitas dulces", "unit": "pack", "expected": 4 },
+      { "name": "Galletitas de agua", "unit": "pack", "expected": 4 },
+      { "name": "Mermelada", "unit": "unit", "expected": 1 },
+      { "name": "Dulce de leche", "unit": "unit", "expected": 1 },
+      { "name": "Cereales", "unit": "pack", "expected": 1 }
+    ]
+  },
+  {
+    "name": "Lácteos",
+    "products": [
+      { "name": "Leche", "unit": "l", "expected": 8 },
+      { "name": "Yogur", "unit": "unit", "expected": 4 },
+      { "name": "Manteca", "unit": "unit", "expected": 1 },
+      { "name": "Queso cremoso", "unit": "kg", "expected": 0.5 },
+      { "name": "Queso rallado", "unit": "pack", "expected": 2 },
+      { "name": "Queso untable", "unit": "unit", "expected": 2 },
+      { "name": "Crema de leche", "unit": "unit", "expected": 1 }
+    ]
+  },
+  {
+    "name": "Fiambrería",
+    "products": [
+      { "name": "Jamón cocido", "unit": "kg", "expected": 0.5 },
+      { "name": "Salame", "unit": "unit", "expected": 1 },
+      { "name": "Huevos", "unit": "unit", "expected": 30 }
+    ]
+  },
+  {
+    "name": "Carnicería",
+    "products": [
+      { "name": "Carne picada", "unit": "kg", "expected": 2 },
+      { "name": "Milanesas", "unit": "kg", "expected": 2 },
+      { "name": "Pollo", "unit": "kg", "expected": 3 },
+      { "name": "Asado", "unit": "kg", "expected": 2 }
+    ]
+  },
+  {
+    "name": "Verdulería",
+    "products": [
+      { "name": "Papa", "unit": "kg", "expected": 4 },
+      { "name": "Cebolla", "unit": "kg", "expected": 2 },
+      { "name": "Zanahoria", "unit": "kg", "expected": 1 },
+      { "name": "Tomate", "unit": "kg", "expected": 2 },
+      { "name": "Lechuga", "unit": "unit", "expected": 2 },
+      { "name": "Ajo", "unit": "unit", "expected": 2 },
+      { "name": "Banana", "unit": "kg", "expected": 2 },
+      { "name": "Manzana", "unit": "kg", "expected": 2 },
+      { "name": "Limón", "unit": "kg", "expected": 0.5 }
+    ]
+  },
+  {
+    "name": "Congelados",
+    "products": [
+      { "name": "Hamburguesas", "unit": "pack", "expected": 1 },
+      { "name": "Verduras congeladas", "unit": "pack", "expected": 2 },
+      { "name": "Papas fritas congeladas", "unit": "pack", "expected": 1 },
+      { "name": "Tapas de empanadas", "unit": "pack", "expected": 2 },
+      { "name": "Tapas de tarta", "unit": "pack", "expected": 2 }
+    ]
+  },
+  {
+    "name": "Panadería",
+    "products": [
+      { "name": "Pan lactal", "unit": "unit", "expected": 4 },
+      { "name": "Tostadas", "unit": "pack", "expected": 2 }
+    ]
+  },
+  {
+    "name": "Bebidas",
+    "products": [
+      { "name": "Agua mineral", "unit": "l", "expected": 12 },
+      { "name": "Gaseosa", "unit": "l", "expected": 6 },
+      { "name": "Jugo en polvo", "unit": "unit", "expected": 8 },
+      { "name": "Vino", "unit": "unit", "expected": 2 },
+      { "name": "Cerveza", "unit": "unit", "expected": 6 }
+    ]
+  },
+  {
+    "name": "Limpieza",
+    "products": [
+      { "name": "Detergente", "unit": "unit", "expected": 2 },
+      { "name": "Lavandina", "unit": "l", "expected": 2 },
+      { "name": "Jabón para la ropa", "unit": "unit", "expected": 1 },
+      { "name": "Suavizante", "unit": "unit", "expected": 1 },
+      { "name": "Limpiador de pisos", "unit": "unit", "expected": 1 },
+      { "name": "Esponjas", "unit": "pack", "expected": 1 },
+      { "name": "Trapo de piso", "unit": "unit", "expected": 1 },
+      { "name": "Bolsas de residuos", "unit": "pack", "expected": 2 },
+      { "name": "Rollo de cocina", "unit": "pack", "expected": 1 },
+      { "name": "Papel aluminio", "unit": "unit", "expected": 1 },
+      { "name": "Insecticida", "unit": "unit", "expected": 1 }
+    ]
+  },
+  {
+    "name": "Perfumería",
+    "products": [
+      { "name": "Papel higiénico", "unit": "pack", "expected": 2 },
+      { "name": "Jabón de tocador", "unit": "unit", "expected": 4 },
+      { "name": "Shampoo", "unit": "unit", "expected": 1 },
+      { "name": "Acondicionador", "unit": "unit", "expected": 1 },
+      { "name": "Pasta dental", "unit": "unit", "expected": 2 },
+      { "name": "Desodorante", "unit": "unit", "expected": 3 },
+      { "name": "Cepillo de dientes", "unit": "unit", "expected": 1 },
+      { "name": "Algodón", "unit": "pack", "expected": 1 },
+      { "name": "Pañuelos descartables", "unit": "pack", "expected": 1 }
+    ]
+  },
+  {
+    "name": "Mascotas",
+    "products": [
+      { "name": "Alimento para perro", "unit": "kg", "expected": 0 },
+      { "name": "Alimento para gato", "unit": "kg", "expected": 0 },
+      { "name": "Piedras sanitarias", "unit": "kg", "expected": 0 }
+    ]
+  }
+]

@@ -46,7 +46,7 @@ Reference: `docs/PROPOSAL.md`.
 |---|---|---|---|---|
 | T1 | S1 | inline | done | feat/01-scaffold (see Log L4) |
 | T2 | S6, S8 | inline (test-first, domain) | done | feat/02-domain (see Log L5) |
-| T3 | S3, S4, S5 | inline (migrations, RLS, seed) | pending | — |
+| T3 | S3, S4, S5 | inline (migrations, RLS, seed) + independent verifier | done | feat/03-database (see Log L6) |
 | T4 | S2, S3, S4 | inline (auth + onboarding UI) | pending | — |
 | T5 | S5 | inline (catalog UI) | pending | — |
 | T6 | S6 | inline (stock review UI) | pending | — |
@@ -79,3 +79,16 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - GREEN: `pnpm --filter @changuito/domain test` gives 22 passed. `typecheck` clean.
   - Rules: `suggestQuantity` (S6), `buildSuggestedList` (a missing stock entry counts as 0; skipped items are re-offered and flagged `carriedOver`), `checkItem`/`uncheckItem`/`skipItem` (S7/S8), `closeTrip` (refuses pending items; carryOver = skipped), `sortBySection`.
   - Assumption: `price` is the unit price.
+- **L6, T3 evidence:**
+  - Schema, RLS, RPCs and realtime are in `supabase/migrations/20261022000000_init_schema.sql`. The base catalog (88 products, 11 sections) is in `packages/domain/src/catalog/base-catalog.json`.
+  - Independent verifier: no blockers; S3, S4, S5 pass. Probes ran in a temp scratch dir inside rolled-back transactions.
+  - Advisories applied:
+    - `checked_by` is forced to `auth.uid()`.
+    - Direct close or reopen is guarded by a trigger.
+    - Items of a closed list are frozen.
+    - User FKs use `on delete set null`.
+    - Product FKs are deferred, so history blocks product deletes. Products get `archived_at`.
+    - `skip_nonce_check = false`.
+  - Deferred (out of S3): leave or remove a member, delete a household, `join_household` rate limit.
+  - `pnpm test:db`: 23/23 pass. `pnpm --filter @changuito/domain test`: 26 passed.
+  - `supabase/.env.example` was blocked by a local deny rule. The Google env var names are documented in the README instead (T9).
