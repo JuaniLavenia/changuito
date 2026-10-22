@@ -51,7 +51,7 @@ Reference: `docs/PROPOSAL.md`.
 | T2 | S6, S8 | inline (test-first, domain) | done | feat/02-domain (see Log L5) |
 | T3 | S3, S4, S5 | inline (migrations, RLS, seed) + independent verifier | done | feat/03-database (see Log L6) |
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
-| T5 | S5 | inline (catalog UI) | pending | — |
+| T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
 | T6 | S6 | inline (stock review UI) | pending | — |
 | T7 | S7 | inline (shopping mode + realtime) | pending | — |
 | T8 | S8 | inline (close trip UI) | pending | — |
@@ -104,3 +104,10 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Fixed a race: the new household is seeded into the query cache before navigating home.
   - Runtime harness N/A: Google OAuth needs real credentials, which the user supplies in T9.
   - Architecture: repository ports in `app/repositories.ts` with Supabase adapters per feature. Tests use in-memory fakes (`src/test/fakes.tsx`).
+- **L9, T5 evidence:**
+  - RED: 6 catalog tests failed.
+  - GREEN: web unit tests 14 passed. `test:integration` 3 passed (catalog adapter: list/create/edit/archive, section sort order).
+  - typecheck and lint clean, react-doctor 100.
+  - Products are archived (`archived_at`), never deleted.
+  - Correction: the T4 commit left a typecheck error (`process` in the integration test without node types). Fixed here by adding `node` to `tsconfig.app.json` types.
+  - Integration helpers are shared in `src/test/integration.ts`.

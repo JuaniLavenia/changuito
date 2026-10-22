@@ -1,11 +1,13 @@
 import { createContext, use } from 'react'
 import type { AuthRepository } from '@/features/auth/auth-repository'
 import type { HouseholdRepository } from '@/features/households/household-repository'
+import type { CatalogRepository } from '@/features/catalog/catalog-repository'
 
 /** Ports the UI depends on. Supabase adapters in production, in-memory fakes in tests. */
 export interface Repositories {
   auth: AuthRepository
   households: HouseholdRepository
+  catalog: CatalogRepository
 }
 
 const RepositoriesContext = createContext<Repositories | null>(null)
