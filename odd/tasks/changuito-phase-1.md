@@ -52,7 +52,7 @@ Reference: `docs/PROPOSAL.md`.
 | T3 | S3, S4, S5 | inline (migrations, RLS, seed) + independent verifier | done | feat/03-database (see Log L6) |
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
 | T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
-| T6 | S6 | inline (stock review UI) | pending | — |
+| T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
 | T7 | S7 | inline (shopping mode + realtime) | pending | — |
 | T8 | S8 | inline (close trip UI) | pending | — |
 | T9 | S9 | inline (Netlify + README) | pending | — |
@@ -111,3 +111,13 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Products are archived (`archived_at`), never deleted.
   - Correction: the T4 commit left a typecheck error (`process` in the integration test without node types). Fixed here by adding `node` to `tsconfig.app.json` types.
   - Integration helpers are shared in `src/test/integration.ts`.
+- **L10, T6 evidence:**
+  - New migration `20261023000000_create_shopping_list.sql` adds an atomic RPC (review + list + items, security invoker).
+  - pgTAP: 29/29 (6 new).
+  - Honest note: the RPC was written before its SQL test, so there was no RED for it. The UI tests had RED (5 failed) and are now GREEN.
+  - Web unit tests: 19 passed. Integration: 4 passed (create list, open list, close with a skipped item, carry-over).
+  - typecheck and lint clean, react-doctor 100.
+  - Every catalog product goes into the stock snapshot (an empty input counts as 0).
+- **L11 (2026-10-22), pause:** the user said "me tengo que ir, es para que sigamos despues!"
+  - Next: T7 (shopping mode + realtime, route `/super`), then T8 (close trip UI), then T9 (Netlify + README + Google OAuth setup).
+  - Nothing pushed. Local Supabase may still be running in Docker (`pnpm exec supabase stop` to stop it).

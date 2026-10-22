@@ -5,6 +5,7 @@ import { RepositoriesProvider, type Repositories } from './app/repositories'
 import { createSupabaseAuthRepository } from './features/auth/auth-repository'
 import { createSupabaseCatalogRepository } from './features/catalog/catalog-repository'
 import { createSupabaseHouseholdRepository } from './features/households/household-repository'
+import { createSupabaseShoppingRepository } from './features/shopping/shopping-repository'
 import { queryClient } from './lib/queryClient'
 import { supabase } from './lib/supabase'
 
@@ -12,6 +13,7 @@ const repositories: Repositories = {
   auth: createSupabaseAuthRepository(supabase),
   households: createSupabaseHouseholdRepository(supabase),
   catalog: createSupabaseCatalogRepository(supabase),
+  shopping: createSupabaseShoppingRepository(supabase),
 }
 
 export default function App() {

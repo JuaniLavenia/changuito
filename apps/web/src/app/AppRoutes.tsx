@@ -4,6 +4,7 @@ import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { useSession } from '@/features/auth/useSession'
 import { CatalogPage } from '@/features/catalog/CatalogPage'
+import { StockReviewPage } from '@/features/stock/StockReviewPage'
 import { HomePage } from '@/features/households/HomePage'
 import { OnboardingPage } from '@/features/households/OnboardingPage'
 import { useCurrentHousehold, useHouseholds } from '@/features/households/queries'
@@ -42,6 +43,7 @@ const SignedInRoutes = () => {
               <Routes>
                 <Route index element={<HomePage household={current} />} />
                 <Route path="catalogo" element={<CatalogPage household={current} />} />
+                <Route path="stock" element={<StockReviewPage household={current} />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </AppShell>

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
-import type { CatalogSection, Product, Section } from '@changuito/domain'
+import type { CarryOverItem, CatalogSection, Product, Section, StockSnapshot, SuggestedItem } from '@changuito/domain'
 import { RepositoriesProvider, type Repositories } from '@/app/repositories'
 import type { AuthRepository, SessionUser } from '@/features/auth/auth-repository'
 import type { CatalogRepository, ProductInput } from '@/features/catalog/catalog-repository'
@@ -12,6 +12,7 @@ import {
   type HouseholdRepository,
 } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
+import type { ShoppingList, ShoppingRepository } from '@/features/shopping/shopping-repository'
 
 export const juani: SessionUser = { id: 'user-juani', name: 'Juani', avatarUrl: null }
 
@@ -133,6 +134,31 @@ export class FakeCatalogRepository implements CatalogRepository {
   }
 }
 
+export class FakeShoppingRepository implements ShoppingRepository {
+  openList: ShoppingList | null
+  carryOver: CarryOverItem[]
+  createdLists: { stock: StockSnapshot; items: SuggestedItem[] }[] = []
+
+  constructor({ openList = null, carryOver = [] }: { openList?: ShoppingList | null; carryOver?: CarryOverItem[] } = {}) {
+    this.openList = openList
+    this.carryOver = carryOver
+  }
+
+  async getOpenList() {
+    return this.openList
+  }
+
+  async getCarryOver() {
+    return this.carryOver
+  }
+
+  async createList(_householdId: string, stock: StockSnapshot, items: SuggestedItem[]) {
+    this.createdLists.push({ stock, items })
+    this.openList = { id: 'list-1', period: '2026-11-01', status: 'draft' }
+    return this.openList
+  }
+}
+
 export function renderWithProviders(
   ui: ReactNode,
   { repositories, path = '/' }: { repositories: Partial<Repositories>; path?: string },
@@ -143,6 +169,7 @@ export function renderWithProviders(
     auth: new FakeAuthRepository(),
     households: new FakeHouseholdRepository(),
     catalog: new FakeCatalogRepository(),
+    shopping: new FakeShoppingRepository(),
     ...repositories,
   }
 

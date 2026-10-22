@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { BookOpen, Home, LogOut, Plus, ShoppingCart, type LucideIcon } from 'lucide-react'
+import { BookOpen, ClipboardList, Home, LogOut, Plus, ShoppingCart, type LucideIcon } from 'lucide-react'
 import { useRepositories } from './repositories'
 import { Button } from '@/components/ui/Button'
 import type { Household } from '@/features/households/household-repository'
@@ -9,6 +9,7 @@ import { useHouseholdStore } from '@/features/households/household-store'
 const NAV_ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/', label: 'Inicio', icon: Home },
   { to: '/catalogo', label: 'Catálogo', icon: BookOpen },
+  { to: '/stock', label: 'Stock', icon: ClipboardList },
 ]
 
 interface AppShellProps {
