@@ -1,0 +1,15 @@
+# Netlify builds the web app from the monorepo root. pnpm is detected from pnpm-lock.yaml
+# and pinned by the root package.json "packageManager" field.
+[build]
+  command = "pnpm --filter @changuito/web build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  # Exact patched release (October 2026 security release). Keep in sync with .nvmrc.
+  NODE_VERSION = "22.23.4"
+
+# Single-page app: every route (/super, /stock, ...) is served by index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

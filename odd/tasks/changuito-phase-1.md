@@ -55,7 +55,7 @@ Reference: `docs/PROPOSAL.md`.
 | T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
 | T7 | S7 | inline (shopping mode + realtime) | done | feat/06-shopping-close, 08b59d8 (see Log L14) |
 | T8 | S8 | inline (close trip UI) | done | feat/06-shopping-close (see Log L15) |
-| T9 | S9 | inline (Netlify + README) | pending | — |
+| T9 | S9 | inline (Netlify + README) | done | feat/07-deploy (see Log L16) |
 
 Route evidence: no Writer trigger reason. Tasks are sequential, each depends on the previous one, so the parent writes inline. T3 touches RLS (security, high risk), so it gets an independent verifier.
 
@@ -147,3 +147,20 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - RED: 3 failed. GREEN: web unit tests 27 passed. Integration 5 passed (the adapter's `closeList` refuses pending items with `22023`, then closes). typecheck and lint clean, build ok.
   - react-doctor went 84 → 100 after replacing an await-in-loop with `Promise.all`.
   - Correction: the first expected total in the test ignored the quantity. It was fixed to $5.400 (6 × $900).
+- **L16, T9 evidence:**
+  - `netlify.toml`: builds with `pnpm --filter @changuito/web build`, publishes `apps/web/dist`, uses Node 22, and has an SPA redirect `/* → /index.html 200` so `/super` survives a reload.
+  - `README.md` covers local development, checks, and deploy in order: Supabase project + `db push`, Google OAuth (Testing vs In production, redirect URIs), Netlify env vars, final URLs, and a two-phone realtime smoke test.
+  - Checks: this is passive documentation and config, so there is no RED test. The root `pnpm build` (the Netlify command) is ok. Status field names were verified against `supabase status -o env` (CLI 2.121).
+  - Not verified: an actual Netlify build. It needs the user's account (S9: remote setup is the user's action).
+  - Local `.env` for the Google provider goes at the repo root, per the Supabase docs on `env()` in `config.toml`.
+  - PR7 will hit an add/add conflict on `README.md` with main's one-line GitHub README. Keep this version.
+  - All Phase 1 tasks are done. Next: open the chained PRs (PR1..PR7, stacked-to-main) when the user asks.
+- **L17 (2026-10-28), Node version:** "en esta semana hubo muchos ataques y node saco actualizaciones de seguridad, podes validar que usemos la version correcta? despues de eso, pushea y abri los PRs"
+  - nodejs.org lists the October 21, 2026 security release. `dist/index.json` marks v22.23.4 as the security release of the 22 line. The same release patched 24.x (24.22.1) and 26.x.
+  - Pinned `NODE_VERSION = "22.23.4"` in `netlify.toml` and added `.nvmrc`. The README states the requirement.
+  - The user's local Node is v22.13.0, which is unpatched. The user has to update it.
+  - Node 22 is in maintenance until April 2027, while `@types/node` is already ^24. Moving to Node 24 LTS is a Phase 2 candidate.
+- **L18 (2026-10-28), PRs:** `feat/06` and `feat/07` were pushed, and PRs #1..#7 were opened (stacked: PR1 → `main`, PR N → `feat/(N-1)`).
+  - Retarget each PR to `main` after the previous one merges.
+  - Slicing pass: per-task slices still exceed 400 lines (UI + tests), so the plan was kept and `size:exception` is suggested in PR1 and PR3–PR6.
+  - PR5 and PR6 can be reviewed commit by commit.
