@@ -39,6 +39,9 @@ Reference: `docs/PROPOSAL.md`.
   - `netlify.toml` builds `apps/web`.
   - The README documents Supabase setup (project, Google OAuth, migrations).
   - Remote setup itself is the user's action.
+- **S10 — UI language.**
+  - All user-facing copy is in neutral Latin American Spanish ("tú" forms). Code and comments stay in English.
+  - User: "quiero que este en español latino".
 
 ## Tasks
 
@@ -47,7 +50,7 @@ Reference: `docs/PROPOSAL.md`.
 | T1 | S1 | inline | done | feat/01-scaffold (see Log L4) |
 | T2 | S6, S8 | inline (test-first, domain) | done | feat/02-domain (see Log L5) |
 | T3 | S3, S4, S5 | inline (migrations, RLS, seed) + independent verifier | done | feat/03-database (see Log L6) |
-| T4 | S2, S3, S4 | inline (auth + onboarding UI) | pending | — |
+| T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
 | T5 | S5 | inline (catalog UI) | pending | — |
 | T6 | S6 | inline (stock review UI) | pending | — |
 | T7 | S7 | inline (shopping mode + realtime) | pending | — |
@@ -92,3 +95,12 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Deferred (out of S3): leave or remove a member, delete a household, `join_household` rate limit.
   - `pnpm test:db`: 23/23 pass. `pnpm --filter @changuito/domain test`: 26 passed.
   - `supabase/.env.example` was blocked by a local deny rule. The Google env var names are documented in the README instead (T9).
+- **L7 (2026-10-22), UI language:** "genial, quiero que este en español latino". This adds S10 and applies from T4 on.
+- **L8, T4 evidence:**
+  - RED: 2 web test files failed (modules missing).
+  - GREEN: `pnpm --filter @changuito/web test` gives 8 passed (2 integration tests skipped without env).
+  - `test:integration` against local Supabase: 2 passed (create with catalog, join lowercase code, list, regenerate, member regenerate rejected, unknown code mapped to `InvalidInviteCodeError`).
+  - typecheck clean, lint clean, build ok, react-doctor 100/100.
+  - Fixed a race: the new household is seeded into the query cache before navigating home.
+  - Runtime harness N/A: Google OAuth needs real credentials, which the user supplies in T9.
+  - Architecture: repository ports in `app/repositories.ts` with Supabase adapters per feature. Tests use in-memory fakes (`src/test/fakes.tsx`).
