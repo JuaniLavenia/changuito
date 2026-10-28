@@ -8,7 +8,7 @@ A shared web app for the monthly supermarket trip: review the stock at home, bui
 
 ## Local development
 
-Requirements: Node 22, pnpm 9 (`corepack enable`), and Docker Desktop for the local Supabase stack.
+Requirements: Node 22.23.4 or a later 22.x security release (pinned in `.nvmrc` and `netlify.toml`), pnpm 9 (`corepack enable`), and Docker Desktop for the local Supabase stack.
 
 1. Install dependencies:
 

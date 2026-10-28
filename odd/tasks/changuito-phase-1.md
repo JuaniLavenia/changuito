@@ -155,3 +155,8 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Local `.env` for the Google provider goes at the repo root, per the Supabase docs on `env()` in `config.toml`.
   - PR7 will hit an add/add conflict on `README.md` with main's one-line GitHub README. Keep this version.
   - All Phase 1 tasks are done. Next: open the chained PRs (PR1..PR7, stacked-to-main) when the user asks.
+- **L17 (2026-10-28), Node version:** "en esta semana hubo muchos ataques y node saco actualizaciones de seguridad, podes validar que usemos la version correcta? despues de eso, pushea y abri los PRs"
+  - nodejs.org lists the October 21, 2026 security release. `dist/index.json` marks v22.23.4 as the security release of the 22 line. The same release patched 24.x (24.22.1) and 26.x.
+  - Pinned `NODE_VERSION = "22.23.4"` in `netlify.toml` and added `.nvmrc`. The README states the requirement.
+  - The user's local Node is v22.13.0, which is unpatched. The user has to update it.
+  - Node 22 is in maintenance until April 2027, while `@types/node` is already ^24. Moving to Node 24 LTS is a Phase 2 candidate.
