@@ -53,7 +53,7 @@ Reference: `docs/PROPOSAL.md`.
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
 | T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
 | T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
-| T7 | S7 | inline (shopping mode + realtime) | done, integration pending (Docker off) | feat/06-shopping-close (see Log L14) |
+| T7 | S7 | inline (shopping mode + realtime) | done | feat/06-shopping-close, 08b59d8 (see Log L14) |
 | T8 | S8 | inline (close trip UI) | pending | — |
 | T9 | S9 | inline (Netlify + README) | pending | — |
 
@@ -136,4 +136,6 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Realtime: `subscribeToItems` listens to `postgres_changes` on `list_items` filtered by `list_id` and invalidates the items query.
   - Assumption: price may be left empty (stored as null), so a check-off in the aisle is never blocked. To revisit if the user wants it required.
   - RED: 5 failed (page missing). GREEN: web unit tests 24 passed. typecheck and lint clean, build ok, react-doctor 100.
-  - Pending: `test:integration` (new `listItems`/`saveItem` test with the `products` embed and the profile name) because Docker was not running. The realtime adapter has no automated test; it needs a manual check with two phones.
+  - `test:integration` (after `supabase db reset`): 5 passed, including the new `listItems`/`saveItem` test (`products` embed, profile name, uncheck).
+  - The realtime adapter has no automated test; it needs a manual check with two phones (T9).
+  - Local Supabase containers use restart policy `unless-stopped`, so they come back with Docker unless stopped with `pnpm exec supabase stop`.
