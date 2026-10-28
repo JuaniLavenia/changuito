@@ -160,3 +160,7 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Pinned `NODE_VERSION = "22.23.4"` in `netlify.toml` and added `.nvmrc`. The README states the requirement.
   - The user's local Node is v22.13.0, which is unpatched. The user has to update it.
   - Node 22 is in maintenance until April 2027, while `@types/node` is already ^24. Moving to Node 24 LTS is a Phase 2 candidate.
+- **L18 (2026-10-28), PRs:** `feat/06` and `feat/07` were pushed, and PRs #1..#7 were opened (stacked: PR1 → `main`, PR N → `feat/(N-1)`).
+  - Retarget each PR to `main` after the previous one merges.
+  - Slicing pass: per-task slices still exceed 400 lines (UI + tests), so the plan was kept and `size:exception` is suggested in PR1 and PR3–PR6.
+  - PR5 and PR6 can be reviewed commit by commit.
