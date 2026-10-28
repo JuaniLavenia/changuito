@@ -87,3 +87,59 @@ describe('ShoppingPage', () => {
     expect(screen.getByRole('link', { name: 'Revisar stock' })).toHaveAttribute('href', '/stock')
   })
 })
+
+describe('ShoppingPage, closing the trip', () => {
+  const boughtMilk = { ...milk, status: 'in_cart' as const, price: 900, checkedBy: 'user-juani', checkedByName: 'Juani' }
+  const oil = shoppingItem({ id: 'i-oil', productId: 'p-oil', name: 'Aceite', quantity: 2, unit: 'l' })
+
+  it('asks why each item was not bought, then closes the list', async () => {
+    const shopping = new FakeShoppingRepository({ openList, items: [boughtMilk, rice, oil] })
+    renderShopping(shopping)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Terminar compra' }))
+    const close = screen.getByRole('button', { name: 'Cerrar compra' })
+    expect(close).toBeDisabled()
+
+    await userEvent.click(within(screen.getByRole('radiogroup', { name: 'Arroz' })).getByRole('radio', { name: 'No había' }))
+    expect(close).toBeDisabled()
+    await userEvent.click(
+      within(screen.getByRole('radiogroup', { name: 'Aceite' })).getByRole('radio', { name: 'Estaba caro' }),
+    )
+    await userEvent.click(close)
+
+    expect(await screen.findByText('Compra cerrada')).toBeInTheDocument()
+    // 6 litres at a unit price of $900.
+    expect(screen.getByText('Compraste 1 producto por $ 5.400,00.')).toBeInTheDocument()
+    expect(screen.getByText('2 productos quedan para la lista del mes que viene.')).toBeInTheDocument()
+    expect(shopping.savedItems).toEqual([
+      expect.objectContaining({ id: 'i-rice', status: 'skipped', skipReason: 'unavailable' }),
+      expect.objectContaining({ id: 'i-oil', status: 'skipped', skipReason: 'too_expensive' }),
+    ])
+    expect(shopping.closedLists).toEqual(['list-1'])
+  })
+
+  it('closes right away when everything is in the cart', async () => {
+    const shopping = new FakeShoppingRepository({ openList, items: [boughtMilk] })
+    renderShopping(shopping)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Terminar compra' }))
+    expect(screen.getByText('Todo está en el carrito.')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Cerrar compra' }))
+
+    expect(await screen.findByText('Compra cerrada')).toBeInTheDocument()
+    expect(screen.queryByText(/quedan? para la lista/)).not.toBeInTheDocument()
+    expect(shopping.closedLists).toEqual(['list-1'])
+  })
+
+  it('keeps the list open and says so when closing fails', async () => {
+    const shopping = new FakeShoppingRepository({ openList, items: [boughtMilk] })
+    shopping.failClose = true
+    renderShopping(shopping)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Terminar compra' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Cerrar compra' }))
+
+    expect(await screen.findByText('No pudimos cerrar la compra. Inténtalo de nuevo.')).toBeInTheDocument()
+    expect(screen.queryByText('Compra cerrada')).not.toBeInTheDocument()
+  })
+})

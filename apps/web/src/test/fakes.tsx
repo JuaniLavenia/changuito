@@ -166,6 +166,8 @@ export class FakeShoppingRepository implements ShoppingRepository {
   items: ShoppingItem[]
   createdLists: { stock: StockSnapshot; items: SuggestedItem[] }[] = []
   savedItems: ListItem[] = []
+  closedLists: string[] = []
+  failClose = false
   private listeners = new Set<() => void>()
 
   constructor({
@@ -210,6 +212,13 @@ export class FakeShoppingRepository implements ShoppingRepository {
     return () => {
       this.listeners.delete(onChange)
     }
+  }
+
+  async closeList(listId: string) {
+    if (this.failClose) throw new Error('close failed')
+    if (this.items.some((item) => item.status === 'pending')) throw new Error('pending items')
+    this.closedLists.push(listId)
+    this.openList = null
   }
 
   /** Simulates another phone changing an item. */

@@ -32,6 +32,8 @@ export interface ShoppingRepository {
   saveItem(item: ListItem): Promise<void>
   /** Calls `onChange` whenever someone changes an item of the list. Returns the unsubscribe function. */
   subscribeToItems(listId: string, onChange: () => void): () => void
+  /** Closes the list. Fails while any item is still pending. */
+  closeList(listId: string): Promise<void>
 }
 
 interface ShoppingListRow {
@@ -174,6 +176,11 @@ export function createSupabaseShoppingRepository(supabase: SupabaseClient): Shop
       return () => {
         void supabase.removeChannel(channel)
       }
+    },
+
+    async closeList(listId) {
+      const { error } = await supabase.rpc('close_shopping_list', { p_list_id: listId })
+      if (error) throw error
     },
   }
 }

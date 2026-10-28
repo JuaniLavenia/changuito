@@ -1,5 +1,5 @@
 // Runs against the local Supabase stack: `pnpm db:start`, then `pnpm --filter @changuito/web test:integration`.
-import { checkItem, uncheckItem } from '@changuito/domain'
+import { checkItem, skipItem, uncheckItem } from '@changuito/domain'
 import { describeIntegration, signedInClient } from '@/test/integration'
 import { createSupabaseCatalogRepository } from '@/features/catalog/catalog-repository'
 import { createSupabaseHouseholdRepository } from '@/features/households/household-repository'
@@ -31,10 +31,11 @@ describeIntegration('Supabase shopping repository', () => {
     expect(list).toMatchObject({ period: currentPeriod(), status: 'draft' })
     expect(await shopping.getOpenList(household.id)).toEqual(list)
 
-    // Close it with the oil skipped, as T8 will do from the UI.
-    await client.from('list_items').update({ status: 'skipped', skip_reason: 'too_expensive' }).eq('list_id', list.id)
-    const { error } = await client.rpc('close_shopping_list', { p_list_id: list.id })
-    expect(error).toBeNull()
+    // Closing refuses pending items, then succeeds once the oil is skipped.
+    await expect(shopping.closeList(list.id)).rejects.toMatchObject({ code: '22023' })
+    const [oilItem] = await shopping.listItems(list.id)
+    await shopping.saveItem(skipItem(oilItem, 'too_expensive'))
+    await shopping.closeList(list.id)
 
     expect(await shopping.getOpenList(household.id)).toBeNull()
     expect(await shopping.getCarryOver(household.id)).toEqual([{ productId: oil.id, quantity: 1.5 }])

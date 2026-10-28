@@ -28,6 +28,23 @@ export function useListItemsRealtime(listId: string) {
   )
 }
 
+/** Saves the skip reasons, then closes the list. The skipped items come back in next month's stock review. */
+export function useCloseTrip(householdId: string, listId: string) {
+  const { shopping } = useRepositories()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (skipped: ListItem[]) => {
+      await Promise.all(skipped.map((item) => shopping.saveItem(item)))
+      await shopping.closeList(listId)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: shoppingKeys.openList(householdId) })
+      void queryClient.invalidateQueries({ queryKey: shoppingKeys.carryOver(householdId) })
+    },
+    onError: () => queryClient.invalidateQueries({ queryKey: shoppingKeys.items(listId) }),
+  })
+}
+
 export function useSaveItem(listId: string) {
   const { shopping } = useRepositories()
   const queryClient = useQueryClient()

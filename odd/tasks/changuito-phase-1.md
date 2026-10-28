@@ -54,7 +54,7 @@ Reference: `docs/PROPOSAL.md`.
 | T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
 | T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
 | T7 | S7 | inline (shopping mode + realtime) | done | feat/06-shopping-close, 08b59d8 (see Log L14) |
-| T8 | S8 | inline (close trip UI) | pending | — |
+| T8 | S8 | inline (close trip UI) | done | feat/06-shopping-close (see Log L15) |
 | T9 | S9 | inline (Netlify + README) | pending | — |
 
 Route evidence: no Writer trigger reason. Tasks are sequential, each depends on the previous one, so the parent writes inline. T3 touches RLS (security, high risk), so it gets an independent verifier.
@@ -139,3 +139,11 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - `test:integration` (after `supabase db reset`): 5 passed, including the new `listItems`/`saveItem` test (`products` embed, profile name, uncheck).
   - The realtime adapter has no automated test; it needs a manual check with two phones (T9).
   - Local Supabase containers use restart policy `unless-stopped`, so they come back with Docker unless stopped with `pnpm exec supabase stop`.
+- **L15, T8 evidence:**
+  - "Terminar compra" on `/super` opens "Cerrar la compra". Every item not in the cart needs a reason ("No había" = `unavailable`, "Estaba caro" = `too_expensive`) before "Cerrar compra" is enabled.
+  - Close saves the skips in parallel, then calls `close_shopping_list`. It shows "Compra cerrada", the bought count with the total (unit price × quantity), and how many items carry over. The carry-over itself is the T6 stock review.
+  - Skipped items show their reason on the list and can still be put in the cart.
+  - If the close fails after the skips were saved, the items stay skipped and a retry only closes. No new migration.
+  - RED: 3 failed. GREEN: web unit tests 27 passed. Integration 5 passed (the adapter's `closeList` refuses pending items with `22023`, then closes). typecheck and lint clean, build ok.
+  - react-doctor went 84 → 100 after replacing an await-in-loop with `Promise.all`.
+  - Correction: the first expected total in the test ignored the quantity. It was fixed to $5.400 (6 × $900).
