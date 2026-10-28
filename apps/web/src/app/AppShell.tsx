@@ -10,6 +10,7 @@ const NAV_ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/', label: 'Inicio', icon: Home },
   { to: '/catalogo', label: 'Catálogo', icon: BookOpen },
   { to: '/stock', label: 'Stock', icon: ClipboardList },
+  { to: '/super', label: 'Súper', icon: ShoppingCart },
 ]
 
 interface AppShellProps {

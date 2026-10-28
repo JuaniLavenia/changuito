@@ -53,8 +53,8 @@ Reference: `docs/PROPOSAL.md`.
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
 | T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
 | T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
-| T7 | S7 | inline (shopping mode + realtime) | pending | — |
-| T8 | S8 | inline (close trip UI) | pending | — |
+| T7 | S7 | inline (shopping mode + realtime) | done | feat/06-shopping-close, 08b59d8 (see Log L14) |
+| T8 | S8 | inline (close trip UI) | done | feat/06-shopping-close (see Log L15) |
 | T9 | S9 | inline (Netlify + README) | pending | — |
 
 Route evidence: no Writer trigger reason. Tasks are sequential, each depends on the previous one, so the parent writes inline. T3 touches RLS (security, high risk), so it gets an independent verifier.
@@ -126,3 +126,24 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Remote `main` had a GitHub "Initial commit" (README.md) with unrelated history. It was merged into local `main` with `--allow-unrelated-histories` (85db29c) and pushed. No force push; the feature branches were not rewritten.
   - The T9 README must build on the existing README.md from main (expect a trivial conflict on PR7).
   - PRs are opened after T9, at the user's request.
+- **L13 (2026-10-28), Phase 2 backlog:** "dale, anotalo para fase 2, lo usariamos con Brevo que ya lo estoy usando en otro proyecto."
+  - Email/password sign-in (in addition to Google) is deferred to Phase 2. It needs custom SMTP (Brevo), because Supabase's default SMTP only sends to team members (~2/hour).
+  - The trigger was a concern that Google OAuth costs money after the Cloud free trial. Creating an OAuth client is free and Supabase Auth handles sign-in, so S2 stays unchanged for Phase 1.
+  - `feat/05` has nothing pending; T7 starts on `feat/06-shopping-close` (based on `feat/05`).
+- **L14, T7 evidence:**
+  - Route `/super` (nav "Súper"). Items grouped by section in store order, "N de M en el carrito".
+  - Check-off opens a dialog: unit price and brand (prefilled with the preferred brand). Shows "Lo tachó <name> · <brand> · <price>". Items can be unchecked.
+  - Realtime: `subscribeToItems` listens to `postgres_changes` on `list_items` filtered by `list_id` and invalidates the items query.
+  - Assumption: price may be left empty (stored as null), so a check-off in the aisle is never blocked. To revisit if the user wants it required.
+  - RED: 5 failed (page missing). GREEN: web unit tests 24 passed. typecheck and lint clean, build ok, react-doctor 100.
+  - `test:integration` (after `supabase db reset`): 5 passed, including the new `listItems`/`saveItem` test (`products` embed, profile name, uncheck).
+  - The realtime adapter has no automated test; it needs a manual check with two phones (T9).
+  - Local Supabase containers use restart policy `unless-stopped`, so they come back with Docker unless stopped with `pnpm exec supabase stop`.
+- **L15, T8 evidence:**
+  - "Terminar compra" on `/super` opens "Cerrar la compra". Every item not in the cart needs a reason ("No había" = `unavailable`, "Estaba caro" = `too_expensive`) before "Cerrar compra" is enabled.
+  - Close saves the skips in parallel, then calls `close_shopping_list`. It shows "Compra cerrada", the bought count with the total (unit price × quantity), and how many items carry over. The carry-over itself is the T6 stock review.
+  - Skipped items show their reason on the list and can still be put in the cart.
+  - If the close fails after the skips were saved, the items stay skipped and a retry only closes. No new migration.
+  - RED: 3 failed. GREEN: web unit tests 27 passed. Integration 5 passed (the adapter's `closeList` refuses pending items with `22023`, then closes). typecheck and lint clean, build ok.
+  - react-doctor went 84 → 100 after replacing an await-in-loop with `Promise.all`.
+  - Correction: the first expected total in the test ignored the quantity. It was fixed to $5.400 (6 × $900).
