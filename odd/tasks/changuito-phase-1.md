@@ -164,3 +164,11 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Retarget each PR to `main` after the previous one merges.
   - Slicing pass: per-task slices still exceed 400 lines (UI + tests), so the plan was kept and `size:exception` is suggested in PR1 and PR3–PR6.
   - PR5 and PR6 can be reviewed commit by commit.
+- **L19 (2026-10-28), deployed:** all PRs merged into `main`.
+  - Live at https://michanguito.netlify.app (Supabase project `vlansyxqendpoaogvlmh`, migrations applied, Google sign-in working).
+  - The user created their household and joined it from a second phone.
+- **L20 (2026-10-28), Phase 2 backlog:** "dale, anotalo para la fase 2. Lo del email seguramente no lo hagamos, vamos a esperar hasta que se me venza lo de google para recien confirmarlo".
+  - Add a "where it is bought" field per product (supermarket, pet shop, cleaning supply store), with the list filtered by store and a close per store. User example: "las piedritas para los gatos, y el alimento de gato y perro, no lo compramos en el supermercado" … "el jabon para la ropa, lo compramos en una quimica por bidon".
+  - Workaround for Phase 1: custom sections ("Mascotas", "Química"), check those items off where they are bought, and close the trip after everything is bought.
+  - Email/password login (L13) is on hold, probably dropped. To be decided after the Google Cloud trial ends (January 2027).
+  - Candidate: move to Node 24 LTS (L17).
