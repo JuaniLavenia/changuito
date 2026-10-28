@@ -1,0 +1,13 @@
+{
+  "name": "changuito",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "dev": "pnpm --filter @changuito/web dev",
+    "build": "pnpm --filter @changuito/web build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  }
+}
