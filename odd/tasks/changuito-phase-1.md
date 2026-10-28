@@ -53,7 +53,7 @@ Reference: `docs/PROPOSAL.md`.
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
 | T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
 | T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
-| T7 | S7 | inline (shopping mode + realtime) | pending | — |
+| T7 | S7 | inline (shopping mode + realtime) | done, integration pending (Docker off) | feat/06-shopping-close (see Log L14) |
 | T8 | S8 | inline (close trip UI) | pending | — |
 | T9 | S9 | inline (Netlify + README) | pending | — |
 
@@ -126,3 +126,14 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Remote `main` had a GitHub "Initial commit" (README.md) with unrelated history. It was merged into local `main` with `--allow-unrelated-histories` (85db29c) and pushed. No force push; the feature branches were not rewritten.
   - The T9 README must build on the existing README.md from main (expect a trivial conflict on PR7).
   - PRs are opened after T9, at the user's request.
+- **L13 (2026-10-28), Phase 2 backlog:** "dale, anotalo para fase 2, lo usariamos con Brevo que ya lo estoy usando en otro proyecto."
+  - Email/password sign-in (in addition to Google) is deferred to Phase 2. It needs custom SMTP (Brevo), because Supabase's default SMTP only sends to team members (~2/hour).
+  - The trigger was a concern that Google OAuth costs money after the Cloud free trial. Creating an OAuth client is free and Supabase Auth handles sign-in, so S2 stays unchanged for Phase 1.
+  - `feat/05` has nothing pending; T7 starts on `feat/06-shopping-close` (based on `feat/05`).
+- **L14, T7 evidence:**
+  - Route `/super` (nav "Súper"). Items grouped by section in store order, "N de M en el carrito".
+  - Check-off opens a dialog: unit price and brand (prefilled with the preferred brand). Shows "Lo tachó <name> · <brand> · <price>". Items can be unchecked.
+  - Realtime: `subscribeToItems` listens to `postgres_changes` on `list_items` filtered by `list_id` and invalidates the items query.
+  - Assumption: price may be left empty (stored as null), so a check-off in the aisle is never blocked. To revisit if the user wants it required.
+  - RED: 5 failed (page missing). GREEN: web unit tests 24 passed. typecheck and lint clean, build ok, react-doctor 100.
+  - Pending: `test:integration` (new `listItems`/`saveItem` test with the `products` embed and the profile name) because Docker was not running. The realtime adapter has no automated test; it needs a manual check with two phones.

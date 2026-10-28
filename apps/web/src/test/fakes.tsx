@@ -2,7 +2,15 @@ import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
-import type { CarryOverItem, CatalogSection, Product, Section, StockSnapshot, SuggestedItem } from '@changuito/domain'
+import type {
+  CarryOverItem,
+  CatalogSection,
+  ListItem,
+  Product,
+  Section,
+  StockSnapshot,
+  SuggestedItem,
+} from '@changuito/domain'
 import { RepositoriesProvider, type Repositories } from '@/app/repositories'
 import type { AuthRepository, SessionUser } from '@/features/auth/auth-repository'
 import type { CatalogRepository, ProductInput } from '@/features/catalog/catalog-repository'
@@ -12,7 +20,7 @@ import {
   type HouseholdRepository,
 } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
-import type { ShoppingList, ShoppingRepository } from '@/features/shopping/shopping-repository'
+import type { ShoppingItem, ShoppingList, ShoppingRepository } from '@/features/shopping/shopping-repository'
 
 export const juani: SessionUser = { id: 'user-juani', name: 'Juani', avatarUrl: null }
 
@@ -134,14 +142,40 @@ export class FakeCatalogRepository implements CatalogRepository {
   }
 }
 
+export const shoppingItem = (
+  overrides: Partial<ShoppingItem> & Pick<ShoppingItem, 'id' | 'productId' | 'name'>,
+): ShoppingItem => ({
+  quantity: 1,
+  status: 'pending',
+  skipReason: null,
+  price: null,
+  brand: null,
+  checkedBy: null,
+  sectionId: 's-pantry',
+  unit: 'unit',
+  preferredBrand: null,
+  checkedByName: null,
+  ...overrides,
+})
+
+const USER_NAMES: Record<string, string> = { [juani.id]: juani.name }
+
 export class FakeShoppingRepository implements ShoppingRepository {
   openList: ShoppingList | null
   carryOver: CarryOverItem[]
+  items: ShoppingItem[]
   createdLists: { stock: StockSnapshot; items: SuggestedItem[] }[] = []
+  savedItems: ListItem[] = []
+  private listeners = new Set<() => void>()
 
-  constructor({ openList = null, carryOver = [] }: { openList?: ShoppingList | null; carryOver?: CarryOverItem[] } = {}) {
+  constructor({
+    openList = null,
+    carryOver = [],
+    items = [],
+  }: { openList?: ShoppingList | null; carryOver?: CarryOverItem[]; items?: ShoppingItem[] } = {}) {
     this.openList = openList
     this.carryOver = carryOver
+    this.items = items
   }
 
   async getOpenList() {
@@ -156,6 +190,32 @@ export class FakeShoppingRepository implements ShoppingRepository {
     this.createdLists.push({ stock, items })
     this.openList = { id: 'list-1', period: '2026-11-01', status: 'draft' }
     return this.openList
+  }
+
+  async listItems() {
+    return this.items
+  }
+
+  async saveItem(item: ListItem) {
+    this.savedItems.push(item)
+    this.items = this.items.map((existing) =>
+      existing.id === item.id
+        ? { ...existing, ...item, checkedByName: item.checkedBy ? (USER_NAMES[item.checkedBy] ?? null) : null }
+        : existing,
+    )
+  }
+
+  subscribeToItems(_listId: string, onChange: () => void) {
+    this.listeners.add(onChange)
+    return () => {
+      this.listeners.delete(onChange)
+    }
+  }
+
+  /** Simulates another phone changing an item. */
+  emitRemoteChange(item: ShoppingItem) {
+    this.items = this.items.map((existing) => (existing.id === item.id ? item : existing))
+    this.listeners.forEach((listener) => listener())
   }
 }
 
