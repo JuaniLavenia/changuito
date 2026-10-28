@@ -2,15 +2,17 @@ import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
-import type { CatalogSection } from '@changuito/domain'
+import type { CarryOverItem, CatalogSection, Product, Section, StockSnapshot, SuggestedItem } from '@changuito/domain'
 import { RepositoriesProvider, type Repositories } from '@/app/repositories'
 import type { AuthRepository, SessionUser } from '@/features/auth/auth-repository'
+import type { CatalogRepository, ProductInput } from '@/features/catalog/catalog-repository'
 import {
   InvalidInviteCodeError,
   type Household,
   type HouseholdRepository,
 } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
+import type { ShoppingList, ShoppingRepository } from '@/features/shopping/shopping-repository'
 
 export const juani: SessionUser = { id: 'user-juani', name: 'Juani', avatarUrl: null }
 
@@ -76,6 +78,87 @@ export class FakeHouseholdRepository implements HouseholdRepository {
   }
 }
 
+export const casa: Household = { id: 'h-1', name: 'Casa', inviteCode: 'ABCD2345', role: 'admin' }
+
+export const sections: Section[] = [
+  { id: 's-dairy', name: 'Lácteos', sortOrder: 2 },
+  { id: 's-pantry', name: 'Almacén', sortOrder: 1 },
+]
+
+export const product = (overrides: Partial<Product> & Pick<Product, 'id' | 'name'>): Product => ({
+  sectionId: 's-pantry',
+  unit: 'unit',
+  preferredBrand: null,
+  expectedMonthlyConsumption: 1,
+  ...overrides,
+})
+
+export class FakeCatalogRepository implements CatalogRepository {
+  sections: Section[]
+  products: Product[]
+  private nextId = 1
+
+  constructor(products: Product[] = [], sectionList: Section[] = sections) {
+    this.products = products
+    this.sections = sectionList
+  }
+
+  async listSections() {
+    return this.sections
+  }
+
+  async listProducts() {
+    return this.products
+  }
+
+  async createProduct(_householdId: string, input: ProductInput) {
+    const created = { id: `p-new-${this.nextId++}`, ...input }
+    this.products = [...this.products, created]
+    return created
+  }
+
+  async updateProduct(productId: string, input: ProductInput) {
+    const updated = { id: productId, ...input }
+    this.products = this.products.map((p) => (p.id === productId ? updated : p))
+    return updated
+  }
+
+  async archiveProduct(productId: string) {
+    this.products = this.products.filter((p) => p.id !== productId)
+  }
+
+  async createSection(_householdId: string, name: string) {
+    const section = { id: `s-new-${this.nextId++}`, name, sortOrder: this.sections.length + 1 }
+    this.sections = [...this.sections, section]
+    return section
+  }
+}
+
+export class FakeShoppingRepository implements ShoppingRepository {
+  openList: ShoppingList | null
+  carryOver: CarryOverItem[]
+  createdLists: { stock: StockSnapshot; items: SuggestedItem[] }[] = []
+
+  constructor({ openList = null, carryOver = [] }: { openList?: ShoppingList | null; carryOver?: CarryOverItem[] } = {}) {
+    this.openList = openList
+    this.carryOver = carryOver
+  }
+
+  async getOpenList() {
+    return this.openList
+  }
+
+  async getCarryOver() {
+    return this.carryOver
+  }
+
+  async createList(_householdId: string, stock: StockSnapshot, items: SuggestedItem[]) {
+    this.createdLists.push({ stock, items })
+    this.openList = { id: 'list-1', period: '2026-11-01', status: 'draft' }
+    return this.openList
+  }
+}
+
 export function renderWithProviders(
   ui: ReactNode,
   { repositories, path = '/' }: { repositories: Partial<Repositories>; path?: string },
@@ -85,6 +168,8 @@ export function renderWithProviders(
   const repos: Repositories = {
     auth: new FakeAuthRepository(),
     households: new FakeHouseholdRepository(),
+    catalog: new FakeCatalogRepository(),
+    shopping: new FakeShoppingRepository(),
     ...repositories,
   }
 

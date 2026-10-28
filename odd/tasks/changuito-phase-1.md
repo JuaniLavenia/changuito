@@ -51,8 +51,8 @@ Reference: `docs/PROPOSAL.md`.
 | T2 | S6, S8 | inline (test-first, domain) | done | feat/02-domain (see Log L5) |
 | T3 | S3, S4, S5 | inline (migrations, RLS, seed) + independent verifier | done | feat/03-database (see Log L6) |
 | T4 | S2, S3, S4, S10 | inline (auth + onboarding UI) | done | feat/04-auth-onboarding (see Log L8) |
-| T5 | S5 | inline (catalog UI) | pending | — |
-| T6 | S6 | inline (stock review UI) | pending | — |
+| T5 | S5, S10 | inline (catalog UI) | done | feat/05-catalog-stock (see Log L9) |
+| T6 | S6, S8, S10 | inline (stock review UI) | done | feat/05-catalog-stock (see Log L10) |
 | T7 | S7 | inline (shopping mode + realtime) | pending | — |
 | T8 | S8 | inline (close trip UI) | pending | — |
 | T9 | S9 | inline (Netlify + README) | pending | — |
@@ -104,3 +104,25 @@ Size forecast: ~3–4k authored lines (exceeds 400). Chain: stacked-to-main, one
   - Fixed a race: the new household is seeded into the query cache before navigating home.
   - Runtime harness N/A: Google OAuth needs real credentials, which the user supplies in T9.
   - Architecture: repository ports in `app/repositories.ts` with Supabase adapters per feature. Tests use in-memory fakes (`src/test/fakes.tsx`).
+- **L9, T5 evidence:**
+  - RED: 6 catalog tests failed.
+  - GREEN: web unit tests 14 passed. `test:integration` 3 passed (catalog adapter: list/create/edit/archive, section sort order).
+  - typecheck and lint clean, react-doctor 100.
+  - Products are archived (`archived_at`), never deleted.
+  - Correction: the T4 commit left a typecheck error (`process` in the integration test without node types). Fixed here by adding `node` to `tsconfig.app.json` types.
+  - Integration helpers are shared in `src/test/integration.ts`.
+- **L10, T6 evidence:**
+  - New migration `20261023000000_create_shopping_list.sql` adds an atomic RPC (review + list + items, security invoker).
+  - pgTAP: 29/29 (6 new).
+  - Honest note: the RPC was written before its SQL test, so there was no RED for it. The UI tests had RED (5 failed) and are now GREEN.
+  - Web unit tests: 19 passed. Integration: 4 passed (create list, open list, close with a skipped item, carry-over).
+  - typecheck and lint clean, react-doctor 100.
+  - Every catalog product goes into the stock snapshot (an empty input counts as 0).
+- **L11 (2026-10-22), pause:** the user said "me tengo que ir, es para que sigamos despues!"
+  - Next: T7 (shopping mode + realtime, route `/super`), then T8 (close trip UI), then T9 (Netlify + README + Google OAuth setup).
+  - Nothing pushed. Local Supabase may still be running in Docker (`pnpm exec supabase stop` to stop it).
+- **L12 (2026-10-22), push:** "guardame todo en engram y pushea todas las ramas. Cuando vuelva seguimos y cuando terminemos hacemos los PR".
+  - All `feat/01`..`feat/05` branches were pushed with upstream.
+  - Remote `main` had a GitHub "Initial commit" (README.md) with unrelated history. It was merged into local `main` with `--allow-unrelated-histories` (85db29c) and pushed. No force push; the feature branches were not rewritten.
+  - The T9 README must build on the existing README.md from main (expect a trivial conflict on PR7).
+  - PRs are opened after T9, at the user's request.

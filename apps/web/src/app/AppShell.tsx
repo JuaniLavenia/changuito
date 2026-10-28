@@ -1,10 +1,16 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import { LogOut, Plus, ShoppingCart } from 'lucide-react'
+import { Link, NavLink } from 'react-router-dom'
+import { BookOpen, ClipboardList, Home, LogOut, Plus, ShoppingCart, type LucideIcon } from 'lucide-react'
 import { useRepositories } from './repositories'
 import { Button } from '@/components/ui/Button'
 import type { Household } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
+
+const NAV_ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
+  { to: '/', label: 'Inicio', icon: Home },
+  { to: '/catalogo', label: 'Catálogo', icon: BookOpen },
+  { to: '/stock', label: 'Stock', icon: ClipboardList },
+]
 
 interface AppShellProps {
   households: Household[]
@@ -52,7 +58,25 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-2xl px-4 py-6">{children}</main>
+      <main className="mx-auto max-w-2xl px-4 pb-24 pt-6">{children}</main>
+      <nav aria-label="Secciones" className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 backdrop-blur">
+        <ul className="mx-auto flex max-w-2xl justify-around">
+          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end
+                className={({ isActive }) =>
+                  `flex flex-col items-center gap-0.5 px-4 py-2 text-xs ${isActive ? 'text-primary' : 'text-muted-foreground'}`
+                }
+              >
+                <Icon aria-hidden className="h-5 w-5" />
+                {label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   )
 }
