@@ -1,57 +1,36 @@
 @import "tailwindcss";
 
+/* Light only: the app does not follow the system dark mode. */
 @theme {
-  --color-primary: #1B4D3E;
+  --color-primary: #16A34A;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #F0EDE8;
-  --color-secondary-foreground: #2D2D2D;
-  --color-muted: #F5F2ED;
-  --color-muted-foreground: #6B6560;
-  --color-accent: #E8DFD0;
-  --color-accent-foreground: #2D2D2D;
+  --color-secondary: #DCFCE7;
+  --color-secondary-foreground: #1F2937;
+  --color-muted: #F3F4F6;
+  --color-muted-foreground: #4B5563;
+  --color-accent: #DCFCE7;
+  --color-accent-foreground: #1F2937;
   --color-destructive: #C54B3C;
   --color-destructive-foreground: #ffffff;
   --color-warning: #B7791F;
   --color-warning-foreground: #ffffff;
-  --color-success: #2D7A5A;
+  --color-success: #16A34A;
   --color-success-foreground: #ffffff;
-  --color-border: #E5E0D8;
-  --color-input: #E5E0D8;
-  --color-ring: #1B4D3E;
-  --color-background: #FAF8F5;
-  --color-foreground: #1a1a1a;
-  --color-card: #FEFEFE;
-  --color-card-foreground: #1a1a1a;
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #22C55E;
+  --color-background: #F3F4F6;
+  --color-foreground: #1F2937;
+  --color-card: #ffffff;
+  --color-card-foreground: #1F2937;
 
   --radius-lg: 0.75rem;
   --radius-md: 0.5rem;
   --radius-sm: 0.25rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-primary: #4ADE80;
-    --color-primary-foreground: #0f172a;
-    --color-secondary: #1e293b;
-    --color-secondary-foreground: #e2e8f0;
-    --color-muted: #1e293b;
-    --color-muted-foreground: #94a3b8;
-    --color-accent: #334155;
-    --color-accent-foreground: #e2e8f0;
-    --color-destructive: #f87171;
-    --color-destructive-foreground: #0f172a;
-    --color-warning: #fbbf24;
-    --color-warning-foreground: #0f172a;
-    --color-success: #4ADE80;
-    --color-success-foreground: #0f172a;
-    --color-border: #334155;
-    --color-input: #334155;
-    --color-ring: #4ADE80;
-    --color-background: #0f172a;
-    --color-foreground: #f1f5f9;
-    --color-card: #1e293b;
-    --color-card-foreground: #f1f5f9;
-  }
+:root {
+  color-scheme: light;
 }
 
 body {
