@@ -20,7 +20,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 |----|-------|-------|--------|----------|
 | T1 | S1 | inline | done (verified on deploy preview) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | done (preview check pending) | branch `feat/pwa-palette` |
-| T3 | S5–S7 | inline | pending | |
+| T3 | S5–S7 | inline | done (preview check pending) | `2a71eca` (S5, S7), next commit (S6) on `feat/mobile-ux` |
 | T4 | S8–S9 | inline | pending | |
 
 ## Log
@@ -47,3 +47,11 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 - **L8 (2026-10-28) — T1 browser check on https://deploy-preview-9--michanguito.netlify.app/** (after the user added `https://*--michanguito.netlify.app/**` to Supabase Redirect URLs). User: Google sign-in went straight home. Assistant in Chrome with the user's session: `/onboarding` redirected to `/` (household loaded); reloads of `/` and `/catalogo` kept the household; the header "+" link still opens onboarding. Not run: the offline check (DevTools network throttling is not available to the extension).
 - **L9 (2026-10-28) — user, verbatim:** "listo! mergeado y deployado. Que quede siempre en modo claro"
 - **L10 — T2.** Chrome install criteria (web.dev/articles/install-criteria): HTTPS + manifest with name, 192/512 icons, start_url, display; no service worker required, so none was added (no dependency, no stale-cache risk; no offline mode). Icons: lucide cart on #16A34A, rounded "any" + full-bleed maskable + 180px apple-touch-icon, PNGs drawn by `apps/web/scripts/render-icons.ps1` (System.Drawing; headless Edge produced no output). Palette mapping: primary/success #16A34A, ring #22C55E, secondary/accent #DCFCE7, background/muted #F3F4F6, foreground #1F2937; supporting neutrals #4B5563 (muted text) and #E5E7EB (borders); dark-mode block removed, `color-scheme: light`. Contrast note: white on #16A34A is ~3.3:1 (below WCAG AA 4.5:1 for small text). RED: `install.test.ts` 2 failing; GREEN: unit 32/32, lint clean, build ok, dist contains manifest and icons.
+- **L11 (2026-10-28) — user, verbatim:** "lo veo todo bien! ahi lo mergeo y te aviso" (palette accepted as given, including the ~3.3:1 button contrast); then "listo! mergeado y deployado. sigamos".
+- **L12 — T3 (S5, S7).** The "flotante de netlify" is the "Powered by Netlify" badge iframe (`#nl-badge-frame`, ~197×64 px, fixed bottom-right) on production; deploy previews also show Netlify's 48 px toolbar at the bottom. Not hidden (third-party content). Instead, CSS vars in `index.css`: `--badge-clearance` (4rem below `sm`, 0 from `sm` up), `--bottom-clearance` (+ safe-area inset, needed since stage 2 set `viewport-fit=cover`), `--bottom-nav-height`; the tab bar, the sticky action bars (stock, shopping, onboarding) and `main` padding use them. The shared Dialog opens anchored at the top on phones (`inset-x-3 top-3`) instead of as a bottom sheet. No meaningful RED in jsdom for layout: checked by build output (utilities generated), unit 32/32, lint clean; visual check pending on the deploy preview at phone width.
+- **L13 — T3 (S6).** Texts proposed by the assistant (neutral "tú", matching the existing UI copy) and approved by the user ("me gustan! sigamos"):
+  - Catálogo: "Estos son los productos que compran todos los meses. Indica cuánto consumen aproximadamente de cada uno en un mes: con eso armamos la lista sugerida."
+  - Stock: "Antes de ir al súper, anota cuánto queda en casa de cada producto. Si no queda nada, déjalo vacío. Con eso calculamos qué hay que comprar."
+  - Súper (shopping): "Marca cada producto cuando lo pongas en el carrito. Se actualiza al instante en los celulares de todo el hogar." (the "N de M en el carrito" counter stays below)
+  - Inicio: deferred to T4 with the summary.
+  RED: 3 new page tests failed; GREEN: unit 35/35, lint and typecheck clean.

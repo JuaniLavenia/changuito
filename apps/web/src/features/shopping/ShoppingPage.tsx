@@ -152,6 +152,9 @@ const ShoppingTrip = ({ householdId, list, sections, onClosed }: ShoppingTripPro
       <div>
         <h1 className="text-2xl font-semibold text-primary">En el súper</h1>
         <p className="text-muted-foreground">
+          Marca cada producto cuando lo pongas en el carrito. Se actualiza al instante en los celulares de todo el hogar.
+        </p>
+        <p className="mt-2 font-medium">
           {inCart} de {items.data.length} en el carrito
         </p>
       </div>
@@ -209,7 +212,7 @@ const ShoppingTrip = ({ householdId, list, sections, onClosed }: ShoppingTripPro
         </section>
       ))}
 
-      <div className="sticky bottom-16 bg-background py-3">
+      <div className="sticky bottom-(--bottom-nav-height) bg-background py-3">
         <Button size="lg" variant="outline" className="w-full" onClick={() => setClosing(true)}>
           Terminar compra
         </Button>

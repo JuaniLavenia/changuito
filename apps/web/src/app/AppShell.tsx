@@ -67,9 +67,12 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-2xl px-4 pb-24 pt-6">{children}</main>
-      <nav aria-label="Secciones" className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 backdrop-blur">
-        <ul className="mx-auto flex max-w-2xl justify-around">
+      <main className="mx-auto max-w-2xl px-4 pb-[calc(var(--bottom-nav-height)+2rem)] pt-6">{children}</main>
+      <nav
+        aria-label="Secciones"
+        className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 pb-(--bottom-clearance) backdrop-blur"
+      >
+        <ul className="mx-auto flex h-14 max-w-2xl items-center justify-around">
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
             <li key={to}>
               <NavLink

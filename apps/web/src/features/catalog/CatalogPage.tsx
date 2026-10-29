@@ -47,12 +47,18 @@ export const CatalogPage = ({ household }: { household: Household }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-semibold text-primary">Catálogo</h1>
-        <Button size="sm" onClick={() => setEditing({ mode: 'new' })}>
-          <Plus aria-hidden className="h-4 w-4" />
-          Agregar producto
-        </Button>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between gap-2">
+          <h1 className="text-2xl font-semibold text-primary">Catálogo</h1>
+          <Button size="sm" onClick={() => setEditing({ mode: 'new' })}>
+            <Plus aria-hidden className="h-4 w-4" />
+            Agregar producto
+          </Button>
+        </div>
+        <p className="text-muted-foreground">
+          Estos son los productos que compran todos los meses. Indica cuánto consumen aproximadamente de cada uno en un
+          mes: con eso armamos la lista sugerida.
+        </p>
       </div>
 
       {groups.length === 0 && <p className="text-muted-foreground">Todavía no hay productos en el catálogo.</p>}
