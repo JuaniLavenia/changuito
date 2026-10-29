@@ -21,7 +21,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 | T1 | S1 | inline | done (verified on deploy preview) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | done (preview check pending) | branch `feat/pwa-palette` |
 | T3 | S5–S7 | inline | done (preview check pending) | `2a71eca` (S5, S7), next commit (S6) on `feat/mobile-ux` |
-| T4 | S8–S9 | inline | done (preview check pending) | branch `feat/home-summary` |
+| T4 | S8–S9 | inline | done (preview check pending) | PR #12; `1bc6c7b` on `feat/home-summary` |
 
 ## Log
 
