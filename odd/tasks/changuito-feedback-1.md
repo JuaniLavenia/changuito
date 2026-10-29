@@ -18,7 +18,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
-| T1 | S1 | inline | done (browser check pending) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
+| T1 | S1 | inline | done (verified on deploy preview) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | pending | |
 | T3 | S5–S7 | inline | pending | |
 | T4 | S8–S9 | inline | pending | |
@@ -44,3 +44,4 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 - **L5 — T1 verification.** Independent verifier: security OK (RLS enforces membership via `auth.uid()`; the client id is only a filter), behavior OK (a thrown `list()` retries once, then shows the error screen, never `/onboarding`), no other callers rely on `[]`. Advisory: the `['households']` query key is not scoped to the user; not reachable today because Google sign-in always does a full-page redirect. Next: T2 (S2–S4), starting with the dark-mode question.
 - **L6 (2026-10-28) — user, verbatim:** "Al entrar en la app me dejaba en el /onboarding, me fije en el network y si traia todo ok, pero no me llevaba al inicio, quedaba ahi. Entonces borre en la url el /onboarding y me cargo el hogar correctamente. Pienso que para que no pase eso, despues de iniciar sesion con google deberia aparecer un loading tipo "Cargando tu hogar", hasta que cargue todo y te deje en el inicio."
 - **L7 — T1b.** Second half of S1: `/onboarding` never sent a member back home once households loaded. Fix: a member reaching `/onboarding` without the "add another household" router state (set by the header "+" link) is redirected to `/`; the households loading spinner shows "Cargando tu hogar…". RED: 2 new AppRoutes tests failed; the "+" link test (preserved behavior) passed before and after. GREEN: unit 30/30 (+6 integration skipped, no keys exported), typecheck and lint clean.
+- **L8 (2026-10-28) — T1 browser check on https://deploy-preview-9--michanguito.netlify.app/** (after the user added `https://*--michanguito.netlify.app/**` to Supabase Redirect URLs). User: Google sign-in went straight home. Assistant in Chrome with the user's session: `/onboarding` redirected to `/` (household loaded); reloads of `/` and `/catalogo` kept the household; the header "+" link still opens onboarding. Not run: the offline check (DevTools network throttling is not available to the extension).
