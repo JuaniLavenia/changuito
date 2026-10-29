@@ -18,7 +18,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
-| T1 | S1 | inline | done (browser check pending) | `9033cf7` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
+| T1 | S1 | inline | done (browser check pending) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | pending | |
 | T3 | S5–S7 | inline | pending | |
 | T4 | S8–S9 | inline | pending | |
