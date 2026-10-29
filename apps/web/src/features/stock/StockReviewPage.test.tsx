@@ -25,6 +25,16 @@ const renderStock = (shopping = new FakeShoppingRepository(), products = [milk, 
   })
 
 describe('StockReviewPage', () => {
+  it('explains how the stock review works', async () => {
+    renderStock()
+
+    expect(
+      await screen.findByText(
+        'Antes de ir al súper, anota cuánto queda en casa de cada producto. Si no queda nada, déjalo vacío. Con eso calculamos qué hay que comprar.',
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('suggests how much to buy as the remaining stock is entered', async () => {
     renderStock()
 

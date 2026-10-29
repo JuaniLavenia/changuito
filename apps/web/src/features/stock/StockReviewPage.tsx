@@ -151,7 +151,10 @@ const StockReview = ({ householdId, products, sections, carryOver }: StockReview
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-primary">Revisar stock</h1>
-        <p className="text-muted-foreground">Anota cuánto queda de cada cosa. Si no queda nada, déjalo vacío.</p>
+        <p className="text-muted-foreground">
+          Antes de ir al súper, anota cuánto queda en casa de cada producto. Si no queda nada, déjalo vacío. Con eso
+          calculamos qué hay que comprar.
+        </p>
       </div>
 
       {products.length === 0 && <p className="text-muted-foreground">Primero agrega productos al catálogo.</p>}

@@ -28,6 +28,16 @@ const renderShopping = (shopping = new FakeShoppingRepository({ openList, items:
   })
 
 describe('ShoppingPage', () => {
+  it('explains how to check items off while shopping', async () => {
+    renderShopping()
+
+    expect(
+      await screen.findByText(
+        'Marca cada producto cuando lo pongas en el carrito. Se actualiza al instante en los celulares de todo el hogar.',
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('lists the items in store order, by section', async () => {
     renderShopping()
 

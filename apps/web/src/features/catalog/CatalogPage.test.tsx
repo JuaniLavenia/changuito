@@ -10,6 +10,16 @@ const renderCatalog = (catalog: FakeCatalogRepository) =>
   })
 
 describe('CatalogPage', () => {
+  it('explains what the catalog is for', async () => {
+    renderCatalog(new FakeCatalogRepository())
+
+    expect(
+      await screen.findByText(
+        'Estos son los productos que compran todos los meses. Indica cuánto consumen aproximadamente de cada uno en un mes: con eso armamos la lista sugerida.',
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('lists products grouped by section in store order', async () => {
     renderCatalog(
       new FakeCatalogRepository([
