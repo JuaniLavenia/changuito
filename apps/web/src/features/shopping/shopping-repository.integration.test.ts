@@ -81,4 +81,44 @@ describeIntegration('Supabase shopping repository', () => {
     await shopping.saveItem(uncheckItem(checked))
     expect((await shopping.listItems(list.id))[0]).toMatchObject({ status: 'pending', price: null, checkedBy: null })
   })
+
+  it('lists closed trips newest first with what was spent on each', async () => {
+    const client = await signedInClient(`history-${Date.now()}@example.com`)
+    const household = await createSupabaseHouseholdRepository(client).create('Casa', [
+      {
+        name: 'Almacén',
+        products: [
+          { name: 'Aceite', unit: 'l', expected: 1 },
+          { name: 'Arroz', unit: 'kg', expected: 2 },
+        ],
+      },
+    ])
+    const products = await createSupabaseCatalogRepository(client).listProducts(household.id)
+    const oil = products.find((p) => p.name === 'Aceite')!
+    const rice = products.find((p) => p.name === 'Arroz')!
+    const shopping = createSupabaseShoppingRepository(client)
+    const { data: auth } = await client.auth.getUser()
+    const userId = auth.user!.id
+
+    expect(await shopping.listClosedTrips(household.id)).toEqual([])
+
+    const buyRiceAt = async (price: number) => {
+      const list = await shopping.createList(household.id, { [oil.id]: 0, [rice.id]: 0 }, [
+        { productId: oil.id, quantity: 1, carriedOver: false },
+        { productId: rice.id, quantity: 2, carriedOver: false },
+      ])
+      for (const item of await shopping.listItems(list.id)) {
+        await shopping.saveItem(item.productId === rice.id ? checkItem(item, { userId, price }) : skipItem(item, 'unavailable'))
+      }
+      await shopping.closeList(list.id)
+      return list
+    }
+    const first = await buyRiceAt(1000)
+    const second = await buyRiceAt(1500)
+
+    expect(await shopping.listClosedTrips(household.id)).toEqual([
+      { id: second.id, period: currentPeriod(), total: 3000, boughtCount: 1 },
+      { id: first.id, period: currentPeriod(), total: 2000, boughtCount: 1 },
+    ])
+  })
 })

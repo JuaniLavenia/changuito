@@ -21,3 +21,14 @@ const priceFormat = new Intl.NumberFormat('es-AR', { style: 'currency', currency
 export function formatPrice(price: number): string {
   return priceFormat.format(price)
 }
+
+export function formatProductCount(count: number): string {
+  return `${count} ${count === 1 ? 'producto' : 'productos'}`
+}
+
+const monthFormat = new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+
+/** "2026-10-01" → "octubre de 2026". */
+export function formatMonth(period: string): string {
+  return monthFormat.format(new Date(`${period}T00:00:00Z`))
+}
