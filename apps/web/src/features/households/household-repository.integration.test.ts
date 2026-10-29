@@ -1,6 +1,6 @@
 // Runs against the local Supabase stack: `pnpm db:start`, then `pnpm --filter @changuito/web test:integration`.
-import { describeIntegration, signedInClient } from '@/test/integration'
-import { createSupabaseHouseholdRepository, InvalidInviteCodeError } from './household-repository'
+import { anonymousClient, describeIntegration, signedInClient } from '@/test/integration'
+import { createSupabaseHouseholdRepository, InvalidInviteCodeError, NotSignedInError } from './household-repository'
 
 describeIntegration('Supabase household repository', () => {
   const run = Date.now()
@@ -29,5 +29,11 @@ describeIntegration('Supabase household repository', () => {
     const stranger = createSupabaseHouseholdRepository(await signedInClient(`stranger-${run}@example.com`))
 
     await expect(stranger.join('ZZZZZZZZ')).rejects.toBeInstanceOf(InvalidInviteCodeError)
+  })
+
+  it('fails instead of reporting no households when there is no signed-in user', async () => {
+    const signedOut = createSupabaseHouseholdRepository(anonymousClient())
+
+    await expect(signedOut.list()).rejects.toBeInstanceOf(NotSignedInError)
   })
 })
