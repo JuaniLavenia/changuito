@@ -126,7 +126,7 @@ const CatalogStep = ({ name }: { name: string }) => {
         onToggleSection={toggleSection}
       />
       {createHousehold.isError && <ErrorMessage>No pudimos crear el hogar. Inténtalo de nuevo.</ErrorMessage>}
-      <div className="sticky bottom-0 bg-background py-3">
+      <div className="sticky bottom-(--bottom-clearance) bg-background py-3">
         <Button size="lg" className="w-full" onClick={create} disabled={createHousehold.isPending}>
           Crear hogar
         </Button>
