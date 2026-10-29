@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { FullPageSpinner } from '@/components/ui/Spinner'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { LoginPage } from '@/features/auth/LoginPage'
@@ -9,7 +9,7 @@ import { StockReviewPage } from '@/features/stock/StockReviewPage'
 import { HomePage } from '@/features/households/HomePage'
 import { OnboardingPage } from '@/features/households/OnboardingPage'
 import { useCurrentHousehold, useHouseholds } from '@/features/households/queries'
-import { AppShell } from './AppShell'
+import { AppShell, type OnboardingState } from './AppShell'
 
 export const AppRoutes = () => {
   const session = useSession()
@@ -24,7 +24,7 @@ const SignedInRoutes = () => {
   const households = useHouseholds()
   const current = useCurrentHousehold()
 
-  if (households.isPending) return <FullPageSpinner />
+  if (households.isPending) return <FullPageSpinner label="Cargando tu hogar…" />
   if (households.isError) {
     return (
       <div className="mx-auto max-w-sm p-4">
@@ -35,7 +35,7 @@ const SignedInRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/onboarding" element={current ? <OnboardingRoute /> : <OnboardingPage />} />
       <Route
         path="/*"
         element={
@@ -56,4 +56,11 @@ const SignedInRoutes = () => {
       />
     </Routes>
   )
+}
+
+/** Members only reach onboarding on purpose, from the "add another household" link. */
+const OnboardingRoute = () => {
+  const location = useLocation()
+  const { addAnother } = (location.state ?? {}) as OnboardingState
+  return addAnother ? <OnboardingPage /> : <Navigate to="/" replace />
 }
