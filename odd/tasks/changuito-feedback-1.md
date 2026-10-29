@@ -18,7 +18,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
-| T1 | S1 | inline | in progress | branch `fix/household-persistence` |
+| T1 | S1 | inline | done (browser check pending) | `9033cf7` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | pending | |
 | T3 | S5–S7 | inline | pending | |
 | T4 | S8–S9 | inline | pending | |
@@ -41,3 +41,4 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 - **L2 (2026-10-28) — user:** "sí, Android y iOS". Plan accepted in 4 stages; "dale, arrancá con la etapa 1."
 - **L3 — T1 analysis.** Membership persists in the DB (`join_household` is idempotent, RLS OK). `HouseholdRepository.list()` swallowed the `supabase.auth.getUser()` result and returned `[]` when it yielded no user (network call; can fail on reload / token refresh / right after the OAuth redirect). `[]` routes the user to `/onboarding`, where re-entering the code "fixes" it. Fix: resolve the user from the local session and throw instead of returning `[]`, so the query errors (and retries) instead of routing to onboarding.
 - **L4 — T1 evidence.** RED: new integration test "fails instead of reporting no households when there is no signed-in user" failed (list resolved instead of rejecting). GREEN: `test:integration` 6/6, `test` 33/33, typecheck and lint clean. Pending: browser check of the real Google flow on the Netlify deploy preview (local Supabase has no Google OAuth credentials).
+- **L5 — T1 verification.** Independent verifier: security OK (RLS enforces membership via `auth.uid()`; the client id is only a filter), behavior OK (a thrown `list()` retries once, then shows the error screen, never `/onboarding`), no other callers rely on `[]`. Advisory: the `['households']` query key is not scoped to the user; not reachable today because Google sign-in always does a full-page redirect. Next: T2 (S2–S4), starting with the dark-mode question.
