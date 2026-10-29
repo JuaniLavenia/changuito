@@ -7,6 +7,10 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 /** Integration suites run only when the local Supabase keys are exported. */
 export const describeIntegration = anonKey && serviceKey ? describe : describe.skip
 
+export function anonymousClient(): SupabaseClient {
+  return createClient(url, anonKey!, { auth: { persistSession: false } })
+}
+
 export async function signedInClient(email: string): Promise<SupabaseClient> {
   const admin = createClient(url, serviceKey!, { auth: { persistSession: false } })
   const password = 'integration-test-password'

@@ -17,6 +17,13 @@ export class InvalidInviteCodeError extends Error {
   }
 }
 
+export class NotSignedInError extends Error {
+  constructor() {
+    super('No signed-in user')
+    this.name = 'NotSignedInError'
+  }
+}
+
 export interface HouseholdRepository {
   /** Households the current user belongs to. */
   list(): Promise<Household[]>
@@ -44,14 +51,17 @@ const NOT_FOUND = 'P0002'
 export function createSupabaseHouseholdRepository(supabase: SupabaseClient): HouseholdRepository {
   return {
     async list() {
-      const { data: auth } = await supabase.auth.getUser()
-      if (!auth.user) return []
+      // Read the stored session instead of calling getUser(): that is a network round-trip, and
+      // treating its failure as "no households" sent signed-in members back to onboarding.
+      const { data: auth, error: authError } = await supabase.auth.getSession()
+      if (authError) throw authError
+      if (!auth.session) throw new NotSignedInError()
 
       // RLS also returns housemates' memberships, so filter to the caller's rows.
       const { data, error } = await supabase
         .from('household_members')
         .select('role, household:households!inner(id, name, invite_code)')
-        .eq('user_id', auth.user.id)
+        .eq('user_id', auth.session.user.id)
         .order('joined_at')
         .returns<{ role: HouseholdRole; household: HouseholdRow }[]>()
       if (error) throw error

@@ -19,6 +19,34 @@ describe('AppRoutes', () => {
     expect(await screen.findByRole('heading', { name: '¡Bienvenido a Changuito!' })).toBeInTheDocument()
   })
 
+  it('tells the user their household is loading', async () => {
+    const households = new FakeHouseholdRepository()
+    households.list = () => new Promise(() => {})
+    renderWithProviders(<AppRoutes />, { repositories: { households } })
+
+    expect(await screen.findByText('Cargando tu hogar…')).toBeInTheDocument()
+  })
+
+  it('takes a member who lands on onboarding back to their household', async () => {
+    const households = new FakeHouseholdRepository([
+      { id: 'h-1', name: 'Casa', inviteCode: 'ABCD2345', role: 'member' },
+    ])
+    renderWithProviders(<AppRoutes />, { repositories: { households }, path: '/onboarding' })
+
+    expect(await screen.findByRole('heading', { name: 'Casa' })).toBeInTheDocument()
+  })
+
+  it('still lets a member open onboarding to add another household', async () => {
+    const households = new FakeHouseholdRepository([
+      { id: 'h-1', name: 'Casa', inviteCode: 'ABCD2345', role: 'member' },
+    ])
+    renderWithProviders(<AppRoutes />, { repositories: { households } })
+
+    await userEvent.click(await screen.findByRole('link', { name: 'Crear o unirme a otro hogar' }))
+
+    expect(await screen.findByRole('heading', { name: '¡Bienvenido a Changuito!' })).toBeInTheDocument()
+  })
+
   it('shows the household home with its invite code to a member', async () => {
     const households = new FakeHouseholdRepository([
       { id: 'h-1', name: 'Casa', inviteCode: 'ABCD2345', role: 'member' },

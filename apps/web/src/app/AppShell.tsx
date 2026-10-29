@@ -13,6 +13,13 @@ const NAV_ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/super', label: 'Súper', icon: ShoppingCart },
 ]
 
+/** Router state that lets a member open onboarding to create or join another household. */
+export interface OnboardingState {
+  addAnother?: boolean
+}
+
+const ADD_ANOTHER: OnboardingState = { addAnother: true }
+
 interface AppShellProps {
   households: Household[]
   current: Household
@@ -48,6 +55,7 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
             )}
             <Link
               to="/onboarding"
+              state={ADD_ANOTHER}
               aria-label="Crear o unirme a otro hogar"
               className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
             >
