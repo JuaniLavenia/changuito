@@ -54,6 +54,7 @@ describe('AppRoutes', () => {
     renderWithProviders(<AppRoutes />, { repositories: { households } })
 
     expect(await screen.findByRole('heading', { name: 'Casa' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Código de invitación' }))
     expect(screen.getByText('ABCD2345')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Generar código nuevo' })).not.toBeInTheDocument()
   })
@@ -64,7 +65,8 @@ describe('AppRoutes', () => {
     ])
     renderWithProviders(<AppRoutes />, { repositories: { households } })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Generar código nuevo' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Código de invitación' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Generar código nuevo' }))
 
     expect(await screen.findByText('NEWC0DE9')).toBeInTheDocument()
   })

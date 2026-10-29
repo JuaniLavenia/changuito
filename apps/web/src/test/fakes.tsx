@@ -20,7 +20,12 @@ import {
   type HouseholdRepository,
 } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
-import type { ShoppingItem, ShoppingList, ShoppingRepository } from '@/features/shopping/shopping-repository'
+import type {
+  ClosedTripSummary,
+  ShoppingItem,
+  ShoppingList,
+  ShoppingRepository,
+} from '@/features/shopping/shopping-repository'
 
 export const juani: SessionUser = { id: 'user-juani', name: 'Juani', avatarUrl: null }
 
@@ -167,6 +172,7 @@ export class FakeShoppingRepository implements ShoppingRepository {
   createdLists: { stock: StockSnapshot; items: SuggestedItem[] }[] = []
   savedItems: ListItem[] = []
   closedLists: string[] = []
+  closedTrips: ClosedTripSummary[]
   failClose = false
   private listeners = new Set<() => void>()
 
@@ -174,10 +180,21 @@ export class FakeShoppingRepository implements ShoppingRepository {
     openList = null,
     carryOver = [],
     items = [],
-  }: { openList?: ShoppingList | null; carryOver?: CarryOverItem[]; items?: ShoppingItem[] } = {}) {
+    closedTrips = [],
+  }: {
+    openList?: ShoppingList | null
+    carryOver?: CarryOverItem[]
+    items?: ShoppingItem[]
+    closedTrips?: ClosedTripSummary[]
+  } = {}) {
     this.openList = openList
     this.carryOver = carryOver
     this.items = items
+    this.closedTrips = closedTrips
+  }
+
+  async listClosedTrips() {
+    return this.closedTrips
   }
 
   async getOpenList() {

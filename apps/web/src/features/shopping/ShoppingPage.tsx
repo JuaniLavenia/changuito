@@ -6,6 +6,7 @@ import {
   closeTrip,
   SKIP_REASONS,
   skipItem,
+  tripSpend,
   uncheckItem,
   type Section,
   type SkipReason,
@@ -17,7 +18,7 @@ import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { Field } from '@/components/ui/Field'
 import { Input } from '@/components/ui/Input'
 import { Spinner } from '@/components/ui/Spinner'
-import { formatPrice, formatQuantity } from '@/lib/format'
+import { formatPrice, formatProductCount, formatQuantity } from '@/lib/format'
 import { parseQuantity } from '@/lib/parse'
 import { cn } from '@/lib/utils'
 import { useSession } from '@/features/auth/useSession'
@@ -31,8 +32,6 @@ const SKIP_REASON_LABELS: Record<SkipReason, string> = {
   unavailable: 'No había',
   too_expensive: 'Estaba caro',
 }
-
-const productLabel = (count: number) => `${count} ${count === 1 ? 'producto' : 'productos'}`
 
 interface ClosedTrip {
   boughtCount: number
@@ -77,12 +76,12 @@ const ClosedTripCard = ({ trip }: { trip: ClosedTrip }) => (
     <h1 className="text-xl font-semibold text-primary">Compra cerrada</h1>
     <p>
       {trip.boughtCount > 0
-        ? `Compraste ${productLabel(trip.boughtCount)} por ${formatPrice(trip.total)}.`
+        ? `Compraste ${formatProductCount(trip.boughtCount)} por ${formatPrice(trip.total)}.`
         : 'Esta vez no compraron nada de la lista.'}
     </p>
     {trip.carriedOverCount > 0 && (
       <p>
-        {productLabel(trip.carriedOverCount)} {trip.carriedOverCount === 1 ? 'queda' : 'quedan'} para la lista del mes
+        {formatProductCount(trip.carriedOverCount)} {trip.carriedOverCount === 1 ? 'queda' : 'quedan'} para la lista del mes
         que viene.
       </p>
     )}
@@ -266,7 +265,7 @@ const CloseTrip = ({ householdId, listId, items, onBack, onClosed }: CloseTripPr
     }
     onClosed({
       boughtCount: summary.bought.length,
-      total: summary.bought.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0),
+      total: tripSpend(summary.bought),
       carriedOverCount: summary.carryOver.length,
     })
   }

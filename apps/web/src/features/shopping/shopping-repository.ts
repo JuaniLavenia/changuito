@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { CarryOverItem, ListItem, StockSnapshot, SuggestedItem, Unit } from '@changuito/domain'
+import { tripSpend, type CarryOverItem, type ListItem, type StockSnapshot, type SuggestedItem, type Unit } from '@changuito/domain'
 
 export type ShoppingListStatus = 'draft' | 'shopping' | 'closed'
 
@@ -34,6 +34,22 @@ export interface ShoppingRepository {
   subscribeToItems(listId: string, onChange: () => void): () => void
   /** Closes the list. Fails while any item is still pending. */
   closeList(listId: string): Promise<void>
+  /** The household's closed lists, most recently closed first, with what was spent on each. */
+  listClosedTrips(householdId: string, limit?: number): Promise<ClosedTripSummary[]>
+}
+
+export interface ClosedTripSummary {
+  id: string
+  /** First day of the month, ISO date (YYYY-MM-DD). */
+  period: string
+  total: number
+  boughtCount: number
+}
+
+interface ClosedTripRow {
+  id: string
+  period: string
+  list_items: { quantity: number | string; price: number | string | null; status: ListItem['status'] }[]
 }
 
 interface ShoppingListRow {
@@ -72,6 +88,31 @@ export function createSupabaseShoppingRepository(supabase: SupabaseClient): Shop
         .maybeSingle<ShoppingListRow>()
       if (error) throw error
       return data ? toShoppingList(data) : null
+    },
+
+    async listClosedTrips(householdId, limit = 6) {
+      const { data, error } = await supabase
+        .from('shopping_lists')
+        .select('id, period, list_items(quantity, price, status)')
+        .eq('household_id', householdId)
+        .eq('status', 'closed')
+        .order('closed_at', { ascending: false })
+        .limit(limit)
+        .returns<ClosedTripRow[]>()
+      if (error) throw error
+      return data.map((row) => {
+        const items = row.list_items.map((item) => ({
+          status: item.status,
+          quantity: Number(item.quantity),
+          price: item.price === null ? null : Number(item.price),
+        }))
+        return {
+          id: row.id,
+          period: row.period,
+          total: tripSpend(items),
+          boughtCount: items.filter((item) => item.status === 'in_cart').length,
+        }
+      })
     },
 
     async getCarryOver(householdId) {

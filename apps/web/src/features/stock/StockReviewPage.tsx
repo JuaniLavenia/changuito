@@ -15,7 +15,7 @@ import { Card } from '@/components/ui/Card'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { Input } from '@/components/ui/Input'
 import { Spinner } from '@/components/ui/Spinner'
-import { formatQuantity, UNIT_LABELS } from '@/lib/format'
+import { formatProductCount, formatQuantity, UNIT_LABELS } from '@/lib/format'
 import { parseQuantity } from '@/lib/parse'
 import { cn } from '@/lib/utils'
 import { groupBySection } from '@/features/catalog/group-by-section'
@@ -28,8 +28,6 @@ interface DraftItem {
   quantity: string
   carriedOver: boolean
 }
-
-const productLabel = (count: number) => `${count} ${count === 1 ? 'producto' : 'productos'}`
 
 export const StockReviewPage = ({ household }: { household: Household }) => {
   const openList = useOpenList(household.id)
@@ -205,7 +203,7 @@ const StockReview = ({ householdId, products, sections, carryOver }: StockReview
 
       <div className="sticky bottom-(--bottom-nav-height) bg-background py-3">
         <Button size="lg" className="w-full" onClick={openPreview} disabled={suggested.length === 0}>
-          Ver la lista ({productLabel(suggested.length)})
+          Ver la lista ({formatProductCount(suggested.length)})
         </Button>
       </div>
     </div>

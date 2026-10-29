@@ -7,11 +7,17 @@ export const shoppingKeys = {
   openList: (householdId: string) => ['open-list', householdId] as const,
   carryOver: (householdId: string) => ['carry-over', householdId] as const,
   items: (listId: string) => ['list-items', listId] as const,
+  closedTrips: (householdId: string) => ['closed-trips', householdId] as const,
 }
 
-export function useListItems(listId: string) {
+/** Waits for a list id: the home summary asks before it knows whether there is an open list. */
+export function useListItems(listId: string | undefined) {
   const { shopping } = useRepositories()
-  return useQuery({ queryKey: shoppingKeys.items(listId), queryFn: () => shopping.listItems(listId) })
+  return useQuery({
+    queryKey: shoppingKeys.items(listId ?? ''),
+    queryFn: () => shopping.listItems(listId!),
+    enabled: Boolean(listId),
+  })
 }
 
 /** Refetches the items whenever another phone changes the list. */
@@ -40,6 +46,7 @@ export function useCloseTrip(householdId: string, listId: string) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: shoppingKeys.openList(householdId) })
       void queryClient.invalidateQueries({ queryKey: shoppingKeys.carryOver(householdId) })
+      void queryClient.invalidateQueries({ queryKey: shoppingKeys.closedTrips(householdId) })
     },
     onError: () => queryClient.invalidateQueries({ queryKey: shoppingKeys.items(listId) }),
   })
@@ -62,6 +69,14 @@ export function useOpenList(householdId: string) {
 export function useCarryOver(householdId: string) {
   const { shopping } = useRepositories()
   return useQuery({ queryKey: shoppingKeys.carryOver(householdId), queryFn: () => shopping.getCarryOver(householdId) })
+}
+
+export function useClosedTrips(householdId: string) {
+  const { shopping } = useRepositories()
+  return useQuery({
+    queryKey: shoppingKeys.closedTrips(householdId),
+    queryFn: () => shopping.listClosedTrips(householdId),
+  })
 }
 
 export function useCreateList(householdId: string) {

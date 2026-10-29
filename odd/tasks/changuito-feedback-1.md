@@ -12,7 +12,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 - **S6 — Page descriptions (stage 3).** User: "En cada una de las landings agregar una pequeña descripción que indique que hacer, por ejemplo, en Catálogo: indica cuánto consumis aproximadamente de cada item..." Texts proposed by the assistant, reviewed by the user.
 - **S7 — Edit product on mobile (stage 3).** User: "Editar producto queda muy abajo cuando se abre en Mobile."
 - **S8 — Invite code on home (stage 4).** User: "No me gusta que en código de invitación se vea en la pantalla de inicio, se debería poder ocultar o ponerlo como desplegable". Assumption: collapsible, collapsed by default.
-- **S9 — Home summary (stage 4).** User: "La pantalla de inicio debería tener un tipo resumen". Open question: summary contents.
+- **S9 — Home summary (stage 4).** User: "La pantalla de inicio debería tener un tipo resumen". Contents chosen by the user (L14): month status with the next step, spend of the current trip, items pending from last month, spending history.
 
 ## Tasks
 
@@ -21,7 +21,7 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
 | T1 | S1 | inline | done (verified on deploy preview) | PR #9; `9033cf7`, `9422757` on `fix/household-persistence`; risk item 2, independent verifier: no blockers; RDD off |
 | T2 | S2–S4 | inline | done (preview check pending) | branch `feat/pwa-palette` |
 | T3 | S5–S7 | inline | done (preview check pending) | `2a71eca` (S5, S7), next commit (S6) on `feat/mobile-ux` |
-| T4 | S8–S9 | inline | pending | |
+| T4 | S8–S9 | inline | done (preview check pending) | branch `feat/home-summary` |
 
 ## Log
 
@@ -55,3 +55,5 @@ Objective: apply the fixes and UX changes the user found while testing the deplo
   - Súper (shopping): "Marca cada producto cuando lo pongas en el carrito. Se actualiza al instante en los celulares de todo el hogar." (the "N de M en el carrito" counter stays below)
   - Inicio: deferred to T4 with the summary.
   RED: 3 new page tests failed; GREEN: unit 35/35, lint and typecheck clean.
+- **L14 (2026-10-28) — user:** "listo! mergeado y deployado. sigamos con la etapa 4". Summary contents chosen (multi-select): "Estado del mes", "Gasto de la compra", "Pendientes del mes pasado", "Historial de gasto". Plan: spend = Σ price × quantity of `in_cart` items (same rule as the close-trip card); history = closed lists of the household with their totals (new read-only repository query, no migration; RLS already lets members read lists and items).
+- **L15 — T4 (S8, S9).** Domain: `tripSpend` (Σ price × quantity of `in_cart`, missing price = 0; now also used by the close-trip card) and `spendingChange`. Repository: `listClosedTrips(householdId, limit = 6)`, closed lists newest first with total and bought count (read-only PostgREST embed, no migration). Home: `MonthSummary` container (shopping feature) with `MonthStatusCard` (no list → "Todavía no revisaron el stock este mes." + pending-from-last-month line + "Revisar stock"; list ready → "La lista de este mes está lista: N productos." + "Ir al súper"; shopping → "X de N en el carrito", "Llevan gastado $…", "Seguir comprando") and `SpendingHistoryCard` (month + total per closed trip, "N% más/menos que la compra anterior"). `useListItems` now waits for a list id. Invite code card is folded by default behind an `aria-expanded` "Código de invitación" button. `productLabel` duplicates moved to `formatProductCount`. RED: 4 domain, 1 integration, 7 home tests failed; GREEN: domain 30/30, web unit 42/42, integration 7/7, lint/typecheck clean, build ok, react-doctor 100 on the diff. Two test-side fixes during GREEN: wait for the loaded card, and normalize the NBSP that `formatPrice` emits.
