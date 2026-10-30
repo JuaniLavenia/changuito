@@ -26,7 +26,7 @@ Objective: each product belongs to a household store (Súper, Veterinaria, Quím
 
 | ID | Specs | Route | Status | Commit |
 |---|---|---|---|---|
-| T1 | S1, S2, S3 | inline (migration, RLS, RPC, pgTAP) + independent verifier | done: verified (L5, L6) | see L6 |
+| T1 | S1, S2, S3 | inline (migration, RLS, RPC, pgTAP) + independent verifier | done: verified (L5, L6) | 09fb246 |
 | T2 | S1, S2, S6 | inline (domain types, catalog repo, catalog UI: store field and store management, onboarding catalog store) | pending | |
 | T3 | S3, S4, S6 | inline (shopping repo, shopping mode per store, partial close) | pending | |
 | T4 | S5, S6 | inline (home month status per store) | pending | |
@@ -66,3 +66,4 @@ Size forecast: T1 ~400, T2 ~450, T3 ~450, T4 ~150 authored lines (~1.5k total, o
   - RED: new pgTAP "a household whose list has closed stores can be deleted" failed with the verifier's error. GREEN: `pnpm test:db` 48/48. Race rechecked with two committed sessions in both orders: the second one fails cleanly (close refused with pending items / item change refused in a closed store).
   - `test:integration` 7/7 (it can fail right after `db:reset` while services start; reruns pass).
   - Advisories left open: two members archiving the last two active stores at the same time can leave none active (rare; a product added without a store then fails); `create_household` matches the section `store` name case-sensitively.
+- **L7 (2026-10-30), user:** "En esta compu vamos a tener que obviar los test y dejarlos para la otra compu jaja, porque sino demoramos mucho en hacer el desarrollo!" On this machine, T2–T4 are written without running test suites; tests are written but RED/GREEN runs are deferred to the other computer and recorded as pending.
