@@ -29,7 +29,7 @@ export const SideMenu = () => {
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger
         aria-label="Abrir menú"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-white/15"
       >
         <Menu aria-hidden className="h-5 w-5" />
       </RadixDialog.Trigger>

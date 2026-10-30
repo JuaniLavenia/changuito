@@ -16,10 +16,11 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
+      {/* White on the primary green is 3.3:1, so the brand text stays large and bold (WCAG large text). */}
+      <header className="sticky top-0 z-10 bg-primary pt-[env(safe-area-inset-top,0px)] text-primary-foreground shadow-sm">
         <div className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-2">
           <SideMenu />
-          <Link to="/" className="flex items-center gap-2 font-semibold text-primary">
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
             <ShoppingCart aria-hidden className="h-5 w-5" />
             Changuito
           </Link>
@@ -27,7 +28,7 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
             {households.length > 1 && (
               <select
                 aria-label="Hogar"
-                className="h-9 max-w-40 rounded-md border border-input bg-card px-2 text-sm"
+                className="h-9 max-w-40 rounded-md border border-input bg-card px-2 text-sm text-foreground"
                 value={current.id}
                 onChange={(event) => selectHousehold(event.target.value)}
               >
