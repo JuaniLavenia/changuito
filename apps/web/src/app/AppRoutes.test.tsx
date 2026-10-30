@@ -42,9 +42,25 @@ describe('AppRoutes', () => {
     ])
     renderWithProviders(<AppRoutes />, { repositories: { households } })
 
-    await userEvent.click(await screen.findByRole('link', { name: 'Crear o unirme a otro hogar' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Abrir menú' }))
+    const menu = screen.getByRole('dialog', { name: 'Menú' })
+    await userEvent.click(within(menu).getByRole('link', { name: 'Crear o unirme a otro hogar' }))
 
     expect(await screen.findByRole('heading', { name: '¡Bienvenido a Changuito!' })).toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Menú' })).not.toBeInTheDocument()
+  })
+
+  it('signs the member out from the side menu', async () => {
+    const households = new FakeHouseholdRepository([
+      { id: 'h-1', name: 'Casa', inviteCode: 'ABCD2345', role: 'member' },
+    ])
+    renderWithProviders(<AppRoutes />, { repositories: { households } })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Abrir menú' }))
+    const menu = screen.getByRole('dialog', { name: 'Menú' })
+    await userEvent.click(within(menu).getByRole('button', { name: 'Cerrar sesión' }))
+
+    expect(await screen.findByRole('button', { name: 'Continuar con Google' })).toBeInTheDocument()
   })
 
   it('shows the household home with its invite code to a member', async () => {

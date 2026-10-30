@@ -1,18 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { LogOut, Plus, ShoppingCart } from 'lucide-react'
-import { useRepositories } from './repositories'
+import { ShoppingCart } from 'lucide-react'
 import { SideMenu } from './SideMenu'
-import { Button } from '@/components/ui/Button'
 import type { Household } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
-
-/** Router state that lets a member open onboarding to create or join another household. */
-export interface OnboardingState {
-  addAnother?: boolean
-}
-
-const ADD_ANOTHER: OnboardingState = { addAnother: true }
 
 interface AppShellProps {
   households: Household[]
@@ -21,7 +12,6 @@ interface AppShellProps {
 }
 
 export const AppShell = ({ households, current, children }: AppShellProps) => {
-  const { auth } = useRepositories()
   const selectHousehold = useHouseholdStore((state) => state.selectHousehold)
 
   return (
@@ -48,17 +38,6 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
                 ))}
               </select>
             )}
-            <Link
-              to="/onboarding"
-              state={ADD_ANOTHER}
-              aria-label="Crear o unirme a otro hogar"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
-            >
-              <Plus aria-hidden className="h-4 w-4" />
-            </Link>
-            <Button variant="ghost" size="icon" aria-label="Cerrar sesión" onClick={() => auth.signOut()}>
-              <LogOut aria-hidden className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </header>
