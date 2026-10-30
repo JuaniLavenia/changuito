@@ -211,7 +211,7 @@ const ShoppingTrip = ({ householdId, list, sections, onClosed }: ShoppingTripPro
         </section>
       ))}
 
-      <div className="sticky bottom-(--bottom-nav-height) bg-background py-3">
+      <div className="sticky bottom-(--bottom-clearance) bg-background py-3">
         <Button size="lg" variant="outline" className="w-full" onClick={() => setClosing(true)}>
           Terminar compra
         </Button>

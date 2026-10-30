@@ -9,7 +9,8 @@ import { StockReviewPage } from '@/features/stock/StockReviewPage'
 import { HomePage } from '@/features/households/HomePage'
 import { OnboardingPage } from '@/features/households/OnboardingPage'
 import { useCurrentHousehold, useHouseholds } from '@/features/households/queries'
-import { AppShell, type OnboardingState } from './AppShell'
+import { AppShell } from './AppShell'
+import type { OnboardingState } from './SideMenu'
 
 export const AppRoutes = () => {
   const session = useSession()
