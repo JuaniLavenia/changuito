@@ -1,17 +1,11 @@
 import type { ReactNode } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { BookOpen, ClipboardList, Home, LogOut, Plus, ShoppingCart, type LucideIcon } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { LogOut, Plus, ShoppingCart } from 'lucide-react'
 import { useRepositories } from './repositories'
+import { SideMenu } from './SideMenu'
 import { Button } from '@/components/ui/Button'
 import type { Household } from '@/features/households/household-repository'
 import { useHouseholdStore } from '@/features/households/household-store'
-
-const NAV_ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: '/', label: 'Inicio', icon: Home },
-  { to: '/catalogo', label: 'Catálogo', icon: BookOpen },
-  { to: '/stock', label: 'Stock', icon: ClipboardList },
-  { to: '/super', label: 'Súper', icon: ShoppingCart },
-]
 
 /** Router state that lets a member open onboarding to create or join another household. */
 export interface OnboardingState {
@@ -34,6 +28,7 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
     <div className="min-h-dvh">
       <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-2">
+          <SideMenu />
           <Link to="/" className="flex items-center gap-2 font-semibold text-primary">
             <ShoppingCart aria-hidden className="h-5 w-5" />
             Changuito
@@ -67,28 +62,7 @@ export const AppShell = ({ households, current, children }: AppShellProps) => {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-2xl px-4 pb-[calc(var(--bottom-nav-height)+2rem)] pt-6">{children}</main>
-      <nav
-        aria-label="Secciones"
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 pb-(--bottom-clearance) backdrop-blur"
-      >
-        <ul className="mx-auto flex h-14 max-w-2xl items-center justify-around">
-          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end
-                className={({ isActive }) =>
-                  `flex flex-col items-center gap-0.5 px-4 py-2 text-xs ${isActive ? 'text-primary' : 'text-muted-foreground'}`
-                }
-              >
-                <Icon aria-hidden className="h-5 w-5" />
-                {label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <main className="mx-auto max-w-2xl px-4 pb-[calc(var(--bottom-clearance)+2rem)] pt-6">{children}</main>
     </div>
   )
 }

@@ -201,7 +201,7 @@ const StockReview = ({ householdId, products, sections, carryOver }: StockReview
         </section>
       ))}
 
-      <div className="sticky bottom-(--bottom-nav-height) bg-background py-3">
+      <div className="sticky bottom-(--bottom-clearance) bg-background py-3">
         <Button size="lg" className="w-full" onClick={openPreview} disabled={suggested.length === 0}>
           Ver la lista ({formatProductCount(suggested.length)})
         </Button>

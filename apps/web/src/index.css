@@ -35,8 +35,6 @@
      so bottom bars sit above it. */
   --badge-clearance: 4rem;
   --bottom-clearance: calc(var(--badge-clearance) + env(safe-area-inset-bottom, 0px));
-  /* Tab bar row (3.5rem) + its top border + the clearance below it. */
-  --bottom-nav-height: calc(3.5rem + 1px + var(--bottom-clearance));
 }
 
 @media (min-width: 40rem) {
